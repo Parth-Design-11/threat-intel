@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-18T11:04:00.000Z",
+  "title": "Design System: Wisely AI Threat Intelligence",
+  "extensions": {
+    "colorMeta": {
+      "page": { "role": "neutral", "displayName": "Mint Floor", "canonical": "#ebf1f1" },
+      "surface": { "role": "neutral", "displayName": "Paper", "canonical": "#ffffff" },
+      "navy": { "role": "secondary", "displayName": "Navy Chrome", "canonical": "#182230" },
+      "primary": { "role": "primary", "displayName": "Action Blue", "canonical": "#256dec" },
+      "primary-base": { "role": "primary", "displayName": "Modal Blue", "canonical": "#375dfb" },
+      "text-main": { "role": "neutral", "displayName": "Ink", "canonical": "#0a0d14" },
+      "stroke": { "role": "neutral", "displayName": "Hairline", "canonical": "#e2e4e9" }
+    },
+    "typographyMeta": {
+      "title": { "displayName": "Title", "purpose": "Page titles and result identifiers." },
+      "body": { "displayName": "Body", "purpose": "Default UI: tables, buttons, fields." },
+      "label": { "displayName": "Label", "purpose": "Captions, badges, helpers." },
+      "mono": { "displayName": "Mono", "purpose": "JSON playground only." }
+    },
+    "shadows": [
+      { "name": "control", "value": "0px 1px 2px 0px rgba(228, 229, 231, 0.24)", "purpose": "Buttons, chips, search fields." },
+      { "name": "card", "value": "0px 1px 1px rgba(228, 229, 231, 0.24)", "purpose": "Metric cards and panels." },
+      { "name": "table", "value": "0px 4px 4px rgba(0, 0, 0, 0.04)", "purpose": "Data table wrappers." },
+      { "name": "modal", "value": "0px 20px 40px -4px rgba(10, 13, 20, 0.15)", "purpose": "Dialogs over the navy scrim." }
+    ],
+    "breakpoints": [
+      { "name": "shell", "value": "1440px", "purpose": "Minimum desktop canvas. No mobile layout." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Modal and in-flow confirm (Add user, Run, Search).",
+      "html": "<button class=\"ds-btn-primary\">Add user</button>",
+      "css": ".ds-btn-primary { background: var(--primary-base, #375dfb); color: #fff; border: 0; border-radius: 8px; padding: 10px 20px; font: 500 14px/20px Inter, system-ui, sans-serif; cursor: pointer; } .ds-btn-primary:hover { filter: brightness(1.05); } .ds-btn-primary:focus-visible { outline: 2px solid #256dec; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Back, Cancel, Load example.",
+      "html": "<button class=\"ds-btn-secondary\">Back</button>",
+      "css": ".ds-btn-secondary { background: #fff; color: #525866; border: 1px solid #e2e4e9; border-radius: 8px; padding: 10px 20px; font: 500 14px/20px Inter, system-ui, sans-serif; cursor: pointer; } .ds-btn-secondary:hover { background: #f6f8fa; } .ds-btn-secondary:focus-visible { outline: 2px solid #256dec; outline-offset: 2px; }"
+    },
+    {
+      "name": "Header CTA",
+      "kind": "button",
+      "refersTo": "button-header",
+      "description": "Page-level create action with leading icon.",
+      "html": "<button class=\"ds-btn-header\">New user</button>",
+      "css": ".ds-btn-header { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 8px 14px 8px 12px; background: #256dec; color: #fff; border: 1px solid #e2e4e9; border-radius: 8px; box-shadow: 0px 1px 2px 0px rgba(228, 229, 231, 0.24); font: 400 14px/20px Inter, system-ui, sans-serif; letter-spacing: -0.084px; cursor: pointer; } .ds-btn-header:hover { filter: brightness(1.05); } .ds-btn-header:focus-visible { outline: 2px solid #182230; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Default 42px field on white with hairline border.",
+      "html": "<label class=\"ds-field\"><span>Email</span><input class=\"ds-input\" placeholder=\"Enter user’s email\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font: 400 14px/20px Inter, system-ui, sans-serif; color: #0a0d14; } .ds-field span { color: #525866; } .ds-input { height: 42px; border: 1px solid #e2e4e9; border-radius: 8px; background: #fff; padding: 10px 14px; font: 400 14px/20px Inter, system-ui, sans-serif; color: #0a0d14; outline: none; } .ds-input::placeholder { color: #868c98; } .ds-input:focus { border-color: #256dec; }"
+    },
+    {
+      "name": "Sidebar Item Active",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Active section in the 249px mint sidebar.",
+      "html": "<button class=\"ds-nav-item is-active\">Settings</button>",
+      "css": ".ds-nav-item { height: 48px; width: 225px; padding: 0 0 0 16px; border: 0; border-radius: 10px; background: transparent; color: #1a1a1a; font: 500 16px/24px Inter, system-ui, sans-serif; letter-spacing: -0.3125px; text-align: left; cursor: pointer; } .ds-nav-item.is-active { background: #182230; color: #fff; } .ds-nav-item:hover:not(.is-active) { background: #f6f8fa; } .ds-nav-item:focus-visible { outline: 2px solid #256dec; outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Badge",
+      "kind": "chip",
+      "refersTo": "badge-active",
+      "description": "Tinted status and confidence pills.",
+      "html": "<span class=\"ds-badge\">Active</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; background: #d1fae5; color: #065f46; font: 500 12px/16px Inter, system-ui, sans-serif; white-space: nowrap; }"
+    },
+    {
+      "name": "Surface Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White 12px panel on the mint floor.",
+      "html": "<article class=\"ds-card\"><header>Asset Details</header><p>Origin Telecom</p></article>",
+      "css": ".ds-card { background: #fff; border: 1px solid #e2e4e9; border-radius: 12px; overflow: hidden; box-shadow: 0px 1px 1px rgba(228, 229, 231, 0.24); font: 400 14px/20px Inter, system-ui, sans-serif; color: #0a0d14; } .ds-card header { padding: 12px 16px; background: #f6f8fa; border-bottom: 1px solid #e2e4e9; font-weight: 600; } .ds-card p { margin: 0; padding: 16px; color: #525866; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Intelligence Desk",
+    "overview": "This is an operate surface for threat analysts: look up identifiers, manage API keys, and administer users. The visual world is a mint-paper operations floor with a navy chrome bar. Surfaces are white cards on a cool page, not a white-canvas SaaS template. Color is quiet except for one family of blues used as the action voice.\n\nDensity is desktop-first and scan-oriented. Tables, tabs, and labeled fields do the work. Ornament, illustration, and motion are not part of the language. Figma Handoff frames are the composition source; this file is the theme those frames are restyled into.",
+    "keyCharacteristics": [
+      "Mint page (#ebf1f1) with navy top bar (#182230)",
+      "Inter only, 400–700; no display serif",
+      "8px controls, 12px cards, 4px badges",
+      "Blue for action, tabs, and focus — never as page fill",
+      "Status is a tinted pill, not a saturated block of color"
+    ],
+    "rules": [
+      { "name": "The One Accent Rule", "body": "Blue is the only loud color and it stays on actions, selection, and identity chips. Do not use it as a page, card, or table fill.", "section": "colors" },
+      { "name": "The Mint Floor Rule", "body": "White is a surface that sits on mint. A full-bleed white main pane is off-brand.", "section": "colors" },
+      { "name": "The Narrow Band Rule", "body": "Do not introduce 32px+ display type or a second family. Hierarchy is weight and color, not a new font.", "section": "typography" },
+      { "name": "The Desk Width Rule", "body": "Do not collapse the sidebar or invent a mobile nav. New screens assume the 1440 shell.", "section": "layout" },
+      { "name": "The Hairline-First Rule", "body": "Prefer stroke over a new shadow. Shadows appear on lifted surfaces (modals, tables), not on every tile.", "section": "elevation" },
+      { "name": "The 8/12 Rule", "body": "Interactive chrome is 8px. Containing surfaces are 12px.", "section": "shapes" }
+    ],
+    "dos": [
+      "Do keep new screens on the 1440 shell with the existing top bar and 249px sidebar.",
+      "Do restyle Figma frames into these tokens rather than copying TelDefence greys or hamburger chrome.",
+      "Do use Inter 14/20 for body UI and 24/32/600 for page titles.",
+      "Do put primary actions as blue buttons; put destructive actions as red text in menus, not red fills.",
+      "Do download icons from Figma and size them explicitly (16/20/24px). Reuse a project icon only when the glyph matches."
+    ],
+    "donts": [
+      "Don't introduce Tailwind, a second typeface, or a dark-mode canvas.",
+      "Don't fill the page with primary blue. Blue is scarce.",
+      "Don't hand-draw SVG icons when a Figma export exists.",
+      "Don't use heavy drop shadows, gradients, or glass on cards.",
+      "Don't invent mobile breakpoints or collapse the sidebar.",
+      "Don't treat JSON playground styling as the default for forms."
+    ]
+  }
+}
