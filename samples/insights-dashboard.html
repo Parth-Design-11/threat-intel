@@ -1,0 +1,904 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wisely AI | Insights — Axis Bank July 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-page: #ebf1f1;
+        --bg-white: #ffffff;
+        --bg-weak: #f6f8fa;
+        --bg-muted: #f3f4f6;
+        --stroke: #e2e4e9;
+        --text-main: #0a0d14;
+        --text-title: #101828;
+        --text-sub: #525866;
+        --text-soft: #868c98;
+        --navy: #182230;
+        --navy-chip: #2e415c;
+        --primary: #256dec;
+        --primary-base: #375dfb;
+        --green-bg: #d1fae5;
+        --green-text: #065f46;
+        --red: #dc2626;
+        --amber: #b45309;
+        --amber-bg: #fef3c7;
+        --shadow-card: 0 1px 1px rgba(228, 229, 231, 0.24);
+        --sidebar-w: 249px;
+        --topbar-h: 74px;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+        font-family: Inter, system-ui, -apple-system, sans-serif;
+        background: var(--bg-page);
+        color: var(--text-main);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      button,
+      select {
+        font-family: inherit;
+        cursor: pointer;
+      }
+
+      .shell {
+        min-width: 1440px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        height: var(--topbar-h);
+        background: var(--navy);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 17px 24px;
+      }
+
+      .brand-title {
+        margin: 0;
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .brand-sub {
+        margin: 2px 0 0;
+        color: rgba(255, 255, 255, 0.72);
+        font-size: 8px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .user-chip {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--navy-chip);
+        border: 1px solid rgba(235, 239, 240, 0.1);
+        border-radius: 28px;
+        padding: 4px 12px 4px 8px;
+        color: #fff;
+        font-size: 13px;
+      }
+
+      .avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #155dfc;
+        display: grid;
+        place-items: center;
+        font-size: 13px;
+      }
+
+      .body {
+        display: flex;
+        flex: 1;
+      }
+
+      .sidebar {
+        width: var(--sidebar-w);
+        border-right: 1px solid rgba(0, 0, 0, 0.06);
+        padding: 16px 12px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        height: 48px;
+        padding: 0 16px;
+        margin-bottom: 4px;
+        border: 0;
+        border-radius: 10px;
+        background: transparent;
+        color: var(--text-body, #1a1a1a);
+        font-size: 16px;
+        font-weight: 500;
+        text-align: left;
+      }
+
+      .nav-item.is-active {
+        background: var(--navy);
+        color: #fff;
+      }
+
+      .nav-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.45;
+      }
+
+      .nav-item.is-active .nav-dot {
+        opacity: 1;
+        background: #fff;
+      }
+
+      .main {
+        flex: 1;
+        min-width: 0;
+        padding: 24px 16px 32px;
+      }
+
+      .page-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 8px;
+      }
+
+      .page-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 32px;
+        color: var(--text-title);
+      }
+
+      .page-sub {
+        margin: 4px 0 0;
+        font-size: 14px;
+        color: var(--text-sub);
+      }
+
+      .page-actions {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .select,
+      .btn-secondary {
+        height: 36px;
+        border: 1px solid var(--stroke);
+        border-radius: 8px;
+        background: #fff;
+        padding: 0 12px;
+        font-size: 14px;
+        color: var(--text-sub);
+      }
+
+      .btn-primary {
+        height: 36px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--primary-base);
+        color: #fff;
+        padding: 0 14px;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .confidential {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 20px;
+        padding: 8px 12px;
+        border-radius: 8px;
+        background: var(--amber-bg);
+        color: var(--amber);
+        font-size: 12px;
+        font-weight: 500;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .metric-card {
+        background: #fff;
+        border: 1px solid var(--stroke);
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: var(--shadow-card);
+      }
+
+      .metric-label {
+        margin: 0 0 8px;
+        font-size: 12px;
+        color: var(--text-soft);
+      }
+
+      .metric-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .metric-value {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 600;
+        color: var(--text-title);
+      }
+
+      .metric-trend {
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .metric-trend.is-up {
+        color: var(--green-text);
+      }
+
+      .metric-trend.is-down {
+        color: var(--green-text);
+      }
+
+      .metric-trend.is-warn {
+        color: var(--amber);
+      }
+
+      .banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 20px;
+        padding: 12px 14px;
+        border: 1px solid rgba(6, 95, 70, 0.15);
+        border-radius: 10px;
+        background: var(--green-bg);
+        color: var(--green-text);
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1.4fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .card {
+        background: #fff;
+        border: 1px solid var(--stroke);
+        border-radius: 12px;
+        box-shadow: var(--shadow-card);
+        overflow: hidden;
+      }
+
+      .card-head {
+        padding: 12px 16px;
+        background: var(--bg-weak);
+        border-bottom: 1px solid var(--stroke);
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-title);
+      }
+
+      .card-body {
+        padding: 16px;
+      }
+
+      .chart-area {
+        height: 220px;
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        padding-top: 12px;
+      }
+
+      .bar-group {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .bars {
+        width: 100%;
+        height: 180px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 4px;
+      }
+
+      .bar {
+        width: 42%;
+        border-radius: 6px 6px 0 0;
+      }
+
+      .bar.a2p {
+        background: #93c5fd;
+      }
+
+      .bar.p2p {
+        background: var(--primary-base);
+      }
+
+      .bar-label {
+        font-size: 11px;
+        color: var(--text-soft);
+      }
+
+      .legend {
+        display: flex;
+        gap: 16px;
+        margin-top: 12px;
+        font-size: 12px;
+        color: var(--text-sub);
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .swatch {
+        width: 10px;
+        height: 10px;
+        border-radius: 2px;
+      }
+
+      .stat-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .stat-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 14px;
+      }
+
+      .stat-row span:first-child {
+        color: var(--text-sub);
+      }
+
+      .stat-row strong {
+        color: var(--text-title);
+        font-weight: 600;
+      }
+
+      .split-bar {
+        display: flex;
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        margin: 10px 0 6px;
+        background: var(--bg-muted);
+      }
+
+      .split-a2p {
+        width: 27%;
+        background: #93c5fd;
+      }
+
+      .split-p2p {
+        width: 73%;
+        background: var(--primary-base);
+      }
+
+      .use-case {
+        margin-bottom: 14px;
+      }
+
+      .use-case:last-child {
+        margin-bottom: 0;
+      }
+
+      .use-case-head {
+        display: flex;
+        justify-content: space-between;
+        font-size: 13px;
+        margin-bottom: 6px;
+      }
+
+      .use-case-track {
+        height: 8px;
+        border-radius: 999px;
+        background: var(--bg-muted);
+        overflow: hidden;
+      }
+
+      .use-case-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #375dfb, #256dec);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        padding: 10px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--stroke);
+        vertical-align: top;
+      }
+
+      th {
+        background: var(--bg-weak);
+        color: var(--text-sub);
+        font-weight: 500;
+      }
+
+      td {
+        color: var(--text-main);
+      }
+
+      .cell-muted {
+        color: var(--text-sub);
+      }
+
+      .pattern {
+        max-width: 420px;
+        line-height: 1.45;
+        color: var(--text-sub);
+        font-family: ui-monospace, Menlo, Monaco, Consolas, monospace;
+        font-size: 12px;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        background: var(--green-bg);
+        color: var(--green-text);
+      }
+
+      .link-btn {
+        border: 0;
+        background: transparent;
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 500;
+        padding: 0;
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      .chip {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--bg-weak);
+        border: 1px solid var(--stroke);
+        font-size: 13px;
+        color: var(--text-sub);
+      }
+
+      .chip strong {
+        color: var(--text-title);
+      }
+
+      .sparkline {
+        display: flex;
+        align-items: flex-end;
+        gap: 3px;
+        height: 64px;
+        margin-top: 8px;
+      }
+
+      .spark {
+        flex: 1;
+        background: #bfdbfe;
+        border-radius: 2px 2px 0 0;
+      }
+
+      .annotation {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border-radius: 8px;
+        background: var(--bg-weak);
+        font-size: 12px;
+        color: var(--text-sub);
+      }
+
+      .annotation strong {
+        color: var(--text-title);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div>
+          <p class="brand-title">Wisely AI</p>
+          <p class="brand-sub">Threat Intelligence</p>
+        </div>
+        <div class="user-chip">
+          <span class="avatar">KD</span>
+          <span>KD</span>
+        </div>
+      </header>
+
+      <div class="body">
+        <aside class="sidebar">
+          <button class="nav-item" type="button"><span class="nav-dot"></span>Explore Intelligence</button>
+          <button class="nav-item is-active" type="button"><span class="nav-dot"></span>Insights</button>
+          <button class="nav-item" type="button"><span class="nav-dot"></span>API</button>
+          <button class="nav-item" type="button"><span class="nav-dot"></span>Settings</button>
+        </aside>
+
+        <main class="main">
+          <div class="page-header">
+            <div>
+              <h1 class="page-title">Insights</h1>
+              <p class="page-sub">Axis Bank · SMS phishing protection overview</p>
+            </div>
+            <div class="page-actions">
+              <select class="select" aria-label="Reporting period">
+                <option selected>July 2026</option>
+                <option>June 2026</option>
+                <option>May 2026</option>
+              </select>
+              <button class="btn-secondary" type="button">Export PDF</button>
+              <button class="btn-primary" type="button">Share brief</button>
+            </div>
+          </div>
+
+          <div class="confidential">Confidential — Axis Bank internal consumption only</div>
+
+          <section class="metrics" aria-label="Executive summary">
+            <article class="metric-card">
+              <p class="metric-label">Users Protected</p>
+              <div class="metric-row">
+                <p class="metric-value">6.2M</p>
+                <span class="metric-trend is-up">↑ 45% vs Jun</span>
+              </div>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Smishing Attacks</p>
+              <div class="metric-row">
+                <p class="metric-value">18.8M</p>
+                <span class="metric-trend is-warn">A2P +77% · P2P +133%</span>
+              </div>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Impersonations Blocked</p>
+              <div class="metric-row">
+                <p class="metric-value">0</p>
+                <span class="metric-trend is-down">↓ MoM flat</span>
+              </div>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Customer Complaints</p>
+              <div class="metric-row">
+                <p class="metric-value">0</p>
+                <span class="metric-trend is-down">↓ from 192 in Apr</span>
+              </div>
+            </article>
+          </section>
+
+          <div class="banner">
+            <span
+              >12.8M unique users protected Apr–Jul · 0 impersonating URLs or sender IDs eliminated · ~3
+              smishing attempts per protected user in July</span
+            >
+          </div>
+
+          <section class="grid-2">
+            <article class="card">
+              <div class="card-head">Protection trend · Feb–Jul 2026</div>
+              <div class="card-body">
+                <div class="chart-area" aria-hidden="true">
+                  <div class="bar-group">
+                    <div class="bars">
+                      <div class="bar a2p" style="height: 34%"></div>
+                      <div class="bar p2p" style="height: 52%"></div>
+                    </div>
+                    <span class="bar-label">Feb</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bars">
+                      <div class="bar a2p" style="height: 38%"></div>
+                      <div class="bar p2p" style="height: 58%"></div>
+                    </div>
+                    <span class="bar-label">Mar</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bars">
+                      <div class="bar a2p" style="height: 42%"></div>
+                      <div class="bar p2p" style="height: 62%"></div>
+                    </div>
+                    <span class="bar-label">Apr</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bars">
+                      <div class="bar a2p" style="height: 46%"></div>
+                      <div class="bar p2p" style="height: 68%"></div>
+                    </div>
+                    <span class="bar-label">May</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bars">
+                      <div class="bar a2p" style="height: 48%"></div>
+                      <div class="bar p2p" style="height: 74%"></div>
+                    </div>
+                    <span class="bar-label">Jun</span>
+                  </div>
+                  <div class="bar-group">
+                    <div class="bars">
+                      <div class="bar a2p" style="height: 54%"></div>
+                      <div class="bar p2p" style="height: 88%"></div>
+                    </div>
+                    <span class="bar-label">Jul</span>
+                  </div>
+                </div>
+                <div class="legend">
+                  <span class="legend-item"><span class="swatch" style="background: #93c5fd"></span>A2P messages</span>
+                  <span class="legend-item"><span class="swatch" style="background: #375dfb"></span>P2P messages</span>
+                </div>
+                <div class="annotation">
+                  <strong>15 July spike:</strong> ~1.7× daily average users targeted and ~2× scam traffic vs
+                  July daily average.
+                </div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">Channel split · July 2026</div>
+              <div class="card-body">
+                <div class="stat-row"><span>Total scam messages</span><strong>18.8M</strong></div>
+                <div class="split-bar" aria-hidden="true">
+                  <div class="split-a2p"></div>
+                  <div class="split-p2p"></div>
+                </div>
+                <div class="stat-row"><span>A2P</span><strong>5.1M (27%)</strong></div>
+                <div class="stat-row"><span>P2P</span><strong>13.7M (73%)</strong></div>
+                <hr style="border: 0; border-top: 1px solid var(--stroke); margin: 16px 0" />
+                <div class="stat-row"><span>Users protected</span><strong>6.2M</strong></div>
+                <div class="stat-row"><span>Avg attacks per user</span><strong>3.0</strong></div>
+                <div class="stat-row"><span>Users per scammer</span><strong>25.2</strong></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="grid-3">
+            <article class="card">
+              <div class="card-head">Users</div>
+              <div class="card-body stat-list">
+                <div class="stat-row"><span>Net new victims</span><strong>3.0M</strong></div>
+                <div class="stat-row"><span>Change vs Jun</span><strong>+94%</strong></div>
+                <div class="stat-row"><span>Repeat victims (Apr–Jul)</span><strong>1.4M</strong></div>
+                <div class="stat-row"><span>Peak day (15 Jul)</span><strong>1.7× daily avg</strong></div>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-head">Modus operandi</div>
+              <div class="card-body stat-list">
+                <div class="stat-row"><span>Top use case</span><strong>Gambling (93%)</strong></div>
+                <div class="stat-row"><span>CTA type</span><strong>URLs (90–95%)</strong></div>
+                <div class="stat-row"><span>Distinct URLs / day</span><strong>20K–25K</strong></div>
+                <div class="stat-row"><span>Attack types observed</span><strong>10+</strong></div>
+              </div>
+            </article>
+            <article class="card">
+              <div class="card-head">Scammer concentration</div>
+              <div class="card-body stat-list">
+                <div class="stat-row"><span>Unique senders</span><strong>246.8K</strong></div>
+                <div class="stat-row"><span>Top 1% share of attacks</span><strong>93%</strong></div>
+                <div class="stat-row"><span>Net new scammers</span><strong>113.8K</strong></div>
+                <div class="stat-row"><span>Repeat scammers (Apr–Jul)</span><strong>130K</strong></div>
+              </div>
+            </article>
+          </section>
+
+          <section class="grid-2">
+            <article class="card">
+              <div class="card-head">Top targeted circles · July 2026</div>
+              <div class="card-body" style="padding: 0">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Circle</th>
+                      <th>Share</th>
+                      <th>MoM</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Gujarat</td>
+                      <td>10%</td>
+                      <td class="cell-muted">+1pp</td>
+                    </tr>
+                    <tr>
+                      <td>Uttar Pradesh</td>
+                      <td>8%</td>
+                      <td class="cell-muted">+1pp</td>
+                    </tr>
+                    <tr>
+                      <td>Bihar</td>
+                      <td>8%</td>
+                      <td class="cell-muted">+2pp</td>
+                    </tr>
+                    <tr>
+                      <td>Rajasthan</td>
+                      <td>7%</td>
+                      <td class="cell-muted">—</td>
+                    </tr>
+                    <tr>
+                      <td>Madhya Pradesh</td>
+                      <td>8%</td>
+                      <td class="cell-muted">+1pp</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">Use case mix · A2P vs P2P</div>
+              <div class="card-body">
+                <div class="use-case">
+                  <div class="use-case-head"><span>Gambling</span><strong>92% A2P · 93% P2P</strong></div>
+                  <div class="use-case-track"><div class="use-case-fill" style="width: 93%"></div></div>
+                </div>
+                <div class="use-case">
+                  <div class="use-case-head"><span>Investment / business</span><strong>1% A2P · 4% P2P</strong></div>
+                  <div class="use-case-track"><div class="use-case-fill" style="width: 18%; opacity: 0.55"></div></div>
+                </div>
+                <div class="use-case">
+                  <div class="use-case-head"><span>Fake loan</span><strong>3% A2P · 1% P2P</strong></div>
+                  <div class="use-case-track"><div class="use-case-fill" style="width: 10%; opacity: 0.45"></div></div>
+                </div>
+                <div class="use-case">
+                  <div class="use-case-head"><span>Dating / job / other</span><strong>4% combined</strong></div>
+                  <div class="use-case-track"><div class="use-case-fill" style="width: 8%; opacity: 0.35"></div></div>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <section class="card" style="margin-bottom: 16px">
+            <div class="card-head">Top scam patterns · July 2026</div>
+            <div class="card-body" style="padding: 0">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Pattern excerpt</th>
+                    <th>Volume</th>
+                    <th>% scams</th>
+                    <th>Users</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="pattern">
+                      NEW UPDATE https://khatri555.com/ FULL RATE MATKA APP SINGLE 1 KA 10 JODI 1 KA 100 PANA…
+                    </td>
+                    <td>557,462</td>
+                    <td>8.6%</td>
+                    <td>136,458</td>
+                    <td><button class="link-btn" type="button">Analyze →</button></td>
+                  </tr>
+                  <tr>
+                    <td class="pattern">
+                      This festive occasion, may success come into your life. happiness your family.
+                      https://radha567.com/ALEEFBAY
+                    </td>
+                    <td>141,332</td>
+                    <td>0.8%</td>
+                    <td>135,548</td>
+                    <td><button class="link-btn" type="button">Analyze →</button></td>
+                  </tr>
+                  <tr>
+                    <td class="pattern">
+                      Claim Special Reward! Rs.50000 Welcome Bonus. Prize Pool Bigger than ever. Play Now at Khel222!
+                      @ bit.ly/K2-nd
+                    </td>
+                    <td>111,232</td>
+                    <td>0.6%</td>
+                    <td>55,550</td>
+                    <td><button class="link-btn" type="button">Analyze →</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card">
+            <div class="card-head">CTA intelligence · July 2026</div>
+            <div class="card-body">
+              <div class="chips">
+                <span class="chip"><strong>90–95%</strong> URL CTAs</span>
+                <span class="chip"><strong>20K–25K</strong> distinct URLs / day</span>
+                <span class="chip"><strong>&lt;1%</strong> WhatsApp / email</span>
+                <span class="chip"><strong>High</strong> daily CTA decay</span>
+              </div>
+              <p style="margin: 0 0 8px; font-size: 13px; color: var(--text-sub)">
+                Distinct CTA volume trend (May → Jul)
+              </p>
+              <div class="sparkline" aria-hidden="true">
+                <div class="spark" style="height: 28%"></div>
+                <div class="spark" style="height: 32%"></div>
+                <div class="spark" style="height: 36%"></div>
+                <div class="spark" style="height: 40%"></div>
+                <div class="spark" style="height: 44%"></div>
+                <div class="spark" style="height: 48%"></div>
+                <div class="spark" style="height: 52%"></div>
+                <div class="spark" style="height: 58%"></div>
+                <div class="spark" style="height: 64%"></div>
+                <div class="spark" style="height: 72%"></div>
+                <div class="spark" style="height: 80%"></div>
+                <div class="spark" style="height: 88%"></div>
+              </div>
+              <div class="annotation">
+                CTAs rotate quickly — most URL-based CTAs appear for less than 24 hours before being replaced.
+                This supports proactive blocking rather than complaint-driven response.
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>

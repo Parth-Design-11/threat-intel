@@ -10,6 +10,7 @@ import type { ApiTab } from "./components/ApiTabs";
 import { AddUserModal } from "./components/AddUserModal";
 import { CreateKeyModal } from "./components/CreateKeyModal";
 import { ExplorePage } from "./components/ExplorePage";
+import { InsightsPage } from "./components/InsightsPage";
 import { KeyCreatedModal } from "./components/KeyCreatedModal";
 import { PlaygroundPage } from "./components/PlaygroundPage";
 import { SettingsPage } from "./components/SettingsPage";
@@ -22,7 +23,7 @@ import { INITIAL_USERS, type ManagedUser } from "./usersData";
 type Modal = "create" | "created" | "add-user" | "edit-user" | null;
 
 export default function App() {
-  const [section, setSection] = useState<AppSection>("api");
+  const [section, setSection] = useState<AppSection>("dashboard");
   const [tab, setTab] = useState<ApiTab>("keys");
   const [modal, setModal] = useState<Modal>(null);
   const [keys, setKeys] = useState<ManagedApi[]>(INITIAL_KEYS);
@@ -36,6 +37,7 @@ export default function App() {
       <div className="body">
         <Sidebar active={section} onSelect={setSection} />
         <main className="main">
+          {section === "dashboard" ? <InsightsPage /> : null}
           {section === "explore" ? <ExplorePage /> : null}
           {section === "settings" ? (
             <SettingsPage

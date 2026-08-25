@@ -1,10 +1,11 @@
 import { assets } from "../assets";
 
-export type AppSection = "explore" | "api" | "settings";
+export type AppSection = "dashboard" | "explore" | "api" | "settings";
 
 const ITEMS = [
+  { id: "dashboard", label: "Dashboard", icon: assets.iconHome },
   { id: "explore", label: "Explore Intelligence", icon: assets.iconExplore },
-  { id: "api", label: "API", icon: assets.iconCode },
+  { id: "api", label: "API", icon: assets.iconCode, isCode: true },
   { id: "settings", label: "Settings", icon: assets.iconSettings },
 ] as const;
 
@@ -18,21 +19,21 @@ export function Sidebar({ active, onSelect }: SidebarProps) {
     <aside className="sidebar">
       <nav className="nav">
         {ITEMS.map((item) => {
-          const selectable = item.id === "explore" || item.id === "api" || item.id === "settings";
-          const isActive = selectable && item.id === active;
+          const isActive = item.id === active;
           return (
             <button
               key={item.id}
               type="button"
               className={`nav-item${isActive ? " is-active" : ""}`}
-              onClick={() => {
-                if (item.id === "explore" || item.id === "api" || item.id === "settings") {
-                  onSelect(item.id);
-                }
-              }}
+              onClick={() => onSelect(item.id)}
             >
-              <span className={`nav-icon${item.id === "api" ? " is-code" : ""}`}>
-                <img src={item.icon} alt="" width={20} height={item.id === "api" ? 16 : 20} />
+              <span className={`nav-icon${"isCode" in item && item.isCode ? " is-code" : ""}`}>
+                <img
+                  src={item.icon}
+                  alt=""
+                  width={20}
+                  height={"isCode" in item && item.isCode ? 16 : 20}
+                />
               </span>
               {item.label}
             </button>
