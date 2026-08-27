@@ -6,7 +6,7 @@ type ApiTabsProps = {
   keysLabel?: string;
 };
 
-export function ApiTabs({ active, onChange, keysLabel = "APIs" }: ApiTabsProps) {
+export function ApiTabs({ active, onChange, keysLabel = "API Keys" }: ApiTabsProps) {
   return (
     <div className="tabs">
       <button

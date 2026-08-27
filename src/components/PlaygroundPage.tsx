@@ -96,7 +96,7 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
             Create API
           </button>
         </div>
-        <ApiTabs active="playground" onChange={onChangeTab} keysLabel="APIs" />
+        <ApiTabs active="playground" onChange={onChangeTab} />
         <section className="playground empty-state-card">
           <p className="logs-title">Create an API to start testing.</p>
         </section>
@@ -116,7 +116,7 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
         </button>
       </div>
 
-      <ApiTabs active="playground" onChange={onChangeTab} keysLabel="APIs" />
+      <ApiTabs active="playground" onChange={onChangeTab} />
 
       <section className="playground">
         <div className="playground-toolbar">

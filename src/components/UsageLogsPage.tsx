@@ -44,7 +44,7 @@ export function UsageLogsPage({ keys, onCreate, onChangeTab }: UsageLogsPageProp
         </button>
       </div>
 
-      <ApiTabs active="usage" onChange={onChangeTab} keysLabel="APIs" />
+      <ApiTabs active="usage" onChange={onChangeTab} />
 
       <div className="metrics">
         <article className="metric-card">

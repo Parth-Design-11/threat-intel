@@ -5,7 +5,7 @@ export type AppSection = "dashboard" | "explore" | "api" | "settings";
 const ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: assets.iconHome },
   { id: "explore", label: "Explore Intelligence", icon: assets.iconExplore },
-  { id: "api", label: "API", icon: assets.iconCode, isCode: true },
+  { id: "api", label: "API Management", icon: assets.iconCode, isCode: true },
   { id: "settings", label: "Settings", icon: assets.iconSettings },
 ] as const;
 

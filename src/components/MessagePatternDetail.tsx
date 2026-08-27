@@ -1,15 +1,12 @@
 import { assets } from "../assets";
 import {
-  PATTERN_DETAILS,
-  PATTERN_RELATED,
-  PATTERN_SENDERS,
-  displayQuery,
+  getMessagePattern,
   type EvidenceConfidence,
   type RelatedAsset,
 } from "../exploreData";
 
-type PatternResultProps = {
-  query: string;
+type MessagePatternDetailProps = {
+  patternId: string;
   onBack: () => void;
 };
 
@@ -23,18 +20,33 @@ function relatedIcon(kind: RelatedAsset["kind"]) {
   return kind === "URL" ? assets.iconLink : assets.iconMessage;
 }
 
-export function PatternResult({ query, onBack }: PatternResultProps) {
-  const title = displayQuery(query);
+export function MessagePatternDetail({ patternId, onBack }: MessagePatternDetailProps) {
+  const pattern = getMessagePattern(patternId);
+
+  if (!pattern) {
+    return (
+      <div className="main-inner is-result">
+        <header className="result-header">
+          <button type="button" className="result-back" onClick={onBack} aria-label="Back to patterns">
+            <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
+          </button>
+          <div className="result-heading">
+            <h1 className="result-title">Pattern not found</h1>
+          </div>
+        </header>
+      </div>
+    );
+  }
 
   return (
     <div className="main-inner is-result">
       <header className="result-header">
-        <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
+        <button type="button" className="result-back" onClick={onBack} aria-label="Back to patterns">
           <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
         </button>
         <div className="result-heading">
-          <h1 className="result-title is-message" title={query}>
-            {title}
+          <h1 className="result-title is-message" title={pattern.excerpt}>
+            {pattern.excerpt}
           </h1>
           <p className="result-meta">
             <span className="result-meta-icon">
@@ -52,44 +64,52 @@ export function PatternResult({ query, onBack }: PatternResultProps) {
             <dl className="asset-grid">
               <div className="asset-field">
                 <dt>Asset Value</dt>
-                <dd className="cell-ellipsis" title={query}>
-                  {title}
+                <dd className="cell-ellipsis" title={pattern.excerpt}>
+                  {pattern.excerpt}
                 </dd>
               </div>
               <div className="asset-field">
                 <dt>Asset Type</dt>
                 <dd className="asset-type">
                   <img src={assets.iconMessage} alt="" width={16} height={16} />
-                  {PATTERN_DETAILS.assetType}
+                  Message Pattern
                 </dd>
               </div>
               <div className="asset-field">
                 <dt>Identified on</dt>
-                <dd>{PATTERN_DETAILS.identifiedOn}</dd>
+                <dd>{pattern.identifiedOn}</dd>
               </div>
               <div className="asset-field">
                 <dt>Pattern families</dt>
-                <dd>{PATTERN_DETAILS.families}</dd>
+                <dd>{pattern.families}</dd>
+              </div>
+              <div className="asset-field">
+                <dt>Use Case</dt>
+                <dd>{pattern.useCase}</dd>
               </div>
               <div className="asset-field">
                 <dt>Related Senders</dt>
-                <dd>{PATTERN_DETAILS.relatedSenders}</dd>
+                <dd>{pattern.relatedSenders}</dd>
               </div>
               <div className="asset-field">
                 <dt>Total Attack Counts</dt>
-                <dd>{PATTERN_DETAILS.totalAttackCounts}</dd>
+                <dd>{pattern.totalAttackCounts}</dd>
+              </div>
+              <div className="asset-field">
+                <dt>Users Affected</dt>
+                <dd>{pattern.usersAffected}</dd>
               </div>
               <div className="asset-field">
                 <dt>Channels</dt>
-                <dd>{PATTERN_DETAILS.channels}</dd>
+                <dd>{pattern.channels}</dd>
               </div>
               <div className="asset-field">
                 <dt>First observed</dt>
-                <dd>{PATTERN_DETAILS.firstObserved}</dd>
+                <dd>{pattern.firstObserved}</dd>
               </div>
               <div className="asset-field">
                 <dt>Last observed</dt>
-                <dd>{PATTERN_DETAILS.lastObserved}</dd>
+                <dd>{pattern.lastObserved}</dd>
               </div>
             </dl>
           </article>
@@ -110,7 +130,7 @@ export function PatternResult({ query, onBack }: PatternResultProps) {
                   <span>Channels</span>
                   <span>Use Case</span>
                 </div>
-                {PATTERN_SENDERS.map((row) => (
+                {pattern.senders.map((row) => (
                   <div key={row.id} className="evidence-row">
                     <span>{row.id}</span>
                     <span className="cell-ellipsis" title={row.sender}>
@@ -138,7 +158,7 @@ export function PatternResult({ query, onBack }: PatternResultProps) {
         <aside className="result-card related-card">
           <div className="result-card-head">Related Assets</div>
           <ul className="related-list">
-            {PATTERN_RELATED.map((asset) => (
+            {pattern.related.map((asset) => (
               <li key={asset.id} className="related-item">
                 <p className="related-url">{asset.value}</p>
                 <p className="related-meta">

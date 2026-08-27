@@ -35,6 +35,67 @@ export function displayQuery(value: string) {
   return compact;
 }
 
+export type ExploreResultState = "full" | "zero" | "no-evidence";
+
+function normalizeExploreQuery(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function phoneDigits(value: string) {
+  return value.replace(/\D/g, "");
+}
+
+/** Demo: +910000000000 → zero; +919999999999 → no-evidence; anything else → full */
+export function resolvePhoneResultState(query: string): ExploreResultState {
+  const normalized = normalizeExploreQuery(query);
+  if (normalized.endsWith(":zero") || /^0+$/.test(phoneDigits(normalized))) return "zero";
+  if (normalized.endsWith(":no-evidence") || /^9+$/.test(phoneDigits(normalized))) return "no-evidence";
+  return "full";
+}
+
+/** Demo: https://zero.example → zero; https://noevidence.example → no-evidence; else → full */
+export function resolveCtaResultState(query: string): ExploreResultState {
+  const normalized = normalizeExploreQuery(query);
+  if (
+    normalized.endsWith(":zero") ||
+    normalized.includes("zero.example") ||
+    normalized.includes("zero-state")
+  ) {
+    return "zero";
+  }
+  if (
+    normalized.endsWith(":no-evidence") ||
+    normalized.includes("noevidence.example") ||
+    normalized.includes("no-evidence")
+  ) {
+    return "no-evidence";
+  }
+  return "full";
+}
+
+export const A_PARTY_NO_EVIDENCE_DETAILS = {
+  originTelecom: "Airtel",
+  assetType: "Sender",
+  identifiedOn: "Aug 27, 2026 10:00 AM",
+  ctasUsed: "0",
+  evidences: "0",
+  totalAttackCounts: "0",
+  firstObserved: "—",
+  lastObserved: "—",
+};
+
+export const CTA_NO_EVIDENCE_DETAILS = {
+  assetType: "URL",
+  identifiedOn: "Aug 27, 2026 10:00 AM",
+  ctaType: "Unknown",
+  urgency: "—",
+  relatedMessages: "0",
+  totalAttackCounts: "0",
+  channels: "—",
+  firstObserved: "—",
+  lastObserved: "—",
+};
+
 export const A_PARTY_DETAILS = {
   originTelecom: "Indosat",
   assetType: "Sender",
@@ -144,18 +205,6 @@ export const A_PARTY_RELATED: RelatedAsset[] = [
   { id: "r8", value: "https://rebrand.ly/tf-retry", kind: "URL", reportedBy: "Telco" },
 ];
 
-export const PATTERN_DETAILS = {
-  assetType: "Message Pattern",
-  identifiedOn: "Jul 12, 2026 9:14 AM",
-  families: "vishing · investment · otp",
-  relatedSenders: "6",
-  totalAttackCounts: "12,481",
-  channels: "SMS · WhatsApp",
-  firstObserved: "May 3, 2026",
-  lastObserved: "Jul 25, 2026",
-  usersAffected: "9,204",
-};
-
 export type RelatedSender = {
   id: string;
   sender: string;
@@ -254,6 +303,119 @@ export const PATTERN_RELATED: RelatedAsset[] = [
   { id: "p7", value: "Investasi crypto 1% per hari. Modal kembali…", kind: "Message Pattern", reportedBy: "Wisely AI" },
   { id: "p8", value: "http://tinyurl.com/crypto-daily", kind: "URL", reportedBy: "Telco" },
 ];
+
+export type MessagePattern = {
+  id: string;
+  excerpt: string;
+  families: string;
+  useCase: string;
+  relatedSenders: string;
+  totalAttackCounts: string;
+  usersAffected: string;
+  channels: string;
+  firstObserved: string;
+  lastObserved: string;
+  identifiedOn: string;
+  senders: RelatedSender[];
+  related: RelatedAsset[];
+};
+
+export const MESSAGE_PATTERNS: MessagePattern[] = [
+  {
+    id: "mp-1",
+    excerpt: "Weekend PARTY pecah. Top up sekarang dan klaim bonus 100%…",
+    families: "gambling · promo",
+    useCase: "Gambling",
+    relatedSenders: "4",
+    totalAttackCounts: "8,422",
+    usersAffected: "7,981",
+    channels: "SMS · WhatsApp",
+    firstObserved: "Jun 12, 2026",
+    lastObserved: "Jul 25, 2026",
+    identifiedOn: "Jul 12, 2026 9:14 AM",
+    senders: PATTERN_SENDERS.slice(0, 4),
+    related: PATTERN_RELATED.slice(0, 4),
+  },
+  {
+    id: "mp-2",
+    excerpt: "Lowongan kerja remote, gaji 15jt/bulan. Daftar sekarang…",
+    families: "fake job · recruitment",
+    useCase: "Fake Job Scam",
+    relatedSenders: "3",
+    totalAttackCounts: "6,160",
+    usersAffected: "5,844",
+    channels: "SMS · WhatsApp",
+    firstObserved: "May 28, 2026",
+    lastObserved: "Jul 22, 2026",
+    identifiedOn: "Jul 8, 2026 2:30 PM",
+    senders: PATTERN_SENDERS.slice(1, 4),
+    related: PATTERN_RELATED.slice(2, 6),
+  },
+  {
+    id: "mp-3",
+    excerpt: "KYC Anda kadaluarsa. Verifikasi sekarang sebelum akun diblokir…",
+    families: "kyc · account verify",
+    useCase: "KYC",
+    relatedSenders: "5",
+    totalAttackCounts: "5,840",
+    usersAffected: "5,412",
+    channels: "SMS · Email",
+    firstObserved: "May 14, 2026",
+    lastObserved: "Jul 20, 2026",
+    identifiedOn: "Jul 5, 2026 11:08 AM",
+    senders: PATTERN_SENDERS.slice(0, 5),
+    related: PATTERN_RELATED.slice(4, 8),
+  },
+  {
+    id: "mp-4",
+    excerpt: "Investasi crypto 1% per hari. Modal kembali dalam 30 hari…",
+    families: "investment · crypto",
+    useCase: "Investment",
+    relatedSenders: "2",
+    totalAttackCounts: "3,288",
+    usersAffected: "3,104",
+    channels: "WhatsApp",
+    firstObserved: "Apr 20, 2026",
+    lastObserved: "Jul 18, 2026",
+    identifiedOn: "Jun 30, 2026 4:45 PM",
+    senders: PATTERN_SENDERS.slice(4, 6),
+    related: PATTERN_RELATED.slice(6, 8),
+  },
+  {
+    id: "mp-5",
+    excerpt: "OTP verifikasi: jangan bagikan kode ini. Hubungi call center…",
+    families: "otp · vishing",
+    useCase: "OTP",
+    relatedSenders: "3",
+    totalAttackCounts: "2,540",
+    usersAffected: "2,311",
+    channels: "SMS · Voice",
+    firstObserved: "Jun 2, 2026",
+    lastObserved: "Jul 14, 2026",
+    identifiedOn: "Jul 1, 2026 8:22 AM",
+    senders: PATTERN_SENDERS.slice(2, 5),
+    related: PATTERN_RELATED.slice(0, 3),
+  },
+  {
+    id: "mp-6",
+    excerpt: "Transfer dana gagal. Coba lagi melalui tautan resmi berikut…",
+    families: "banking · payment",
+    useCase: "Banking",
+    relatedSenders: "2",
+    totalAttackCounts: "1,642",
+    usersAffected: "1,490",
+    channels: "SMS",
+    firstObserved: "May 3, 2026",
+    lastObserved: "Jul 8, 2026",
+    identifiedOn: "Jun 18, 2026 6:15 PM",
+    senders: PATTERN_SENDERS.slice(5, 6),
+    related: PATTERN_RELATED.slice(1, 3),
+  },
+];
+
+export function getMessagePattern(id: string) {
+  return MESSAGE_PATTERNS.find((pattern) => pattern.id === id);
+}
 
 export const CTA_DETAILS = {
   assetType: "URL",

@@ -6,7 +6,7 @@ import { Pagination } from "./Pagination";
 import { ApiTabs, type ApiTab } from "./ApiTabs";
 
 const COLUMNS = [
-  "API Name",
+  "Key Name",
   "Type",
   "Environment",
   "Created By",
@@ -35,7 +35,6 @@ export function AccessKeysPage({ keys, onCreate, onUpdateKeys, onChangeTab }: Ac
       active: keys.filter((key) => key.status === "Active").length,
       disabled: keys.filter((key) => key.status === "Disabled").length,
       expired: keys.filter((key) => key.status === "Expired").length,
-      expiringSoon: keys.filter((key) => key.status === "Active" && isExpiringSoon(key.expiry)).length,
     }),
     [keys],
   );
@@ -65,11 +64,11 @@ export function AccessKeysPage({ keys, onCreate, onUpdateKeys, onChangeTab }: Ac
           <span className="icon" style={{ width: 20, height: 20 }}>
             <img src={assets.iconAdd} alt="" width={20} height={20} />
           </span>
-          Create API
+          Create API Key
         </button>
       </div>
 
-      <ApiTabs active="keys" onChange={onChangeTab} keysLabel="APIs" />
+      <ApiTabs active="keys" onChange={onChangeTab} />
 
       <div className="metrics">
         <article className={`metric-card is-clickable${statusFilter === "All" ? " is-selected" : ""}`} onClick={() => setStatusFilter("All")}>
@@ -89,22 +88,6 @@ export function AccessKeysPage({ keys, onCreate, onUpdateKeys, onChangeTab }: Ac
           <p className="metric-value">{counts.expired}</p>
         </article>
       </div>
-
-      {counts.expiringSoon > 0 ? (
-        <div className="inline-banner">
-          <span>{counts.expiringSoon} APIs expire in the next 30 days.</span>
-          <button
-            type="button"
-            className="inline-banner-link"
-            onClick={() => {
-              setQuery("");
-              setStatusFilter("Active");
-            }}
-          >
-            Review
-          </button>
-        </div>
-      ) : null}
 
       <section className="table-card">
         <div className="table-toolbar">

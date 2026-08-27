@@ -2,11 +2,15 @@ import { assets } from "../assets";
 import {
   CTA_DETAILS,
   CTA_MESSAGES,
+  CTA_NO_EVIDENCE_DETAILS,
   CTA_RELATED,
   displayQuery,
+  resolveCtaResultState,
   type EvidenceConfidence,
   type RelatedAsset,
 } from "../exploreData";
+import { ExploreZeroState } from "./ExploreZeroState";
+import { ResultEmptyPanel } from "./ResultEmptyPanel";
 
 type CtaResultProps = {
   query: string;
@@ -27,6 +31,40 @@ function relatedIcon(kind: RelatedAsset["kind"]) {
 
 export function CtaResult({ query, onBack }: CtaResultProps) {
   const title = displayQuery(query);
+  const state = resolveCtaResultState(query);
+
+  if (state === "zero") {
+    return (
+      <div className="main-inner is-result">
+        <header className="result-header">
+          <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
+            <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
+          </button>
+          <div className="result-heading">
+            <h1 className="result-title is-message" title={query}>
+              {title}
+            </h1>
+            <p className="result-meta">
+              <span className="result-meta-icon">
+                <img src={assets.iconLink} alt="" width={16} height={16} />
+              </span>
+              CTA Check
+            </p>
+          </div>
+        </header>
+
+        <ExploreZeroState
+          title="No intelligence found"
+          description="This CTA hasn't been observed in scam, phishing, or fraud campaigns across our threat network."
+          hint="Try a different URL or message text, or check back as new signals are ingested daily."
+        />
+      </div>
+    );
+  }
+
+  const details = state === "no-evidence" ? CTA_NO_EVIDENCE_DETAILS : CTA_DETAILS;
+  const messages = state === "no-evidence" ? [] : CTA_MESSAGES;
+  const related = state === "no-evidence" ? [] : CTA_RELATED;
 
   return (
     <div className="main-inner is-result">
@@ -43,6 +81,9 @@ export function CtaResult({ query, onBack }: CtaResultProps) {
               <img src={assets.iconLink} alt="" width={16} height={16} />
             </span>
             CTA Check
+            {state === "no-evidence" ? (
+              <span className="result-status-badge is-no-evidence">No evidence</span>
+            ) : null}
           </p>
         </div>
       </header>
@@ -62,102 +103,116 @@ export function CtaResult({ query, onBack }: CtaResultProps) {
                 <dt>Asset Type</dt>
                 <dd className="asset-type">
                   <img src={assets.iconLink} alt="" width={16} height={16} />
-                  {CTA_DETAILS.assetType}
+                  {details.assetType}
                 </dd>
               </div>
               <div className="asset-field">
                 <dt>Identified on</dt>
-                <dd>{CTA_DETAILS.identifiedOn}</dd>
+                <dd>{details.identifiedOn}</dd>
               </div>
               <div className="asset-field">
                 <dt>CTA Type</dt>
-                <dd>{CTA_DETAILS.ctaType}</dd>
+                <dd>{details.ctaType}</dd>
               </div>
               <div className="asset-field">
                 <dt>Urgency</dt>
-                <dd>{CTA_DETAILS.urgency}</dd>
+                <dd>{details.urgency}</dd>
               </div>
               <div className="asset-field">
                 <dt>Related Messages</dt>
-                <dd>{CTA_DETAILS.relatedMessages}</dd>
+                <dd>{details.relatedMessages}</dd>
               </div>
               <div className="asset-field">
                 <dt>Total Attack Counts</dt>
-                <dd>{CTA_DETAILS.totalAttackCounts}</dd>
+                <dd>{details.totalAttackCounts}</dd>
               </div>
               <div className="asset-field">
                 <dt>Channels</dt>
-                <dd>{CTA_DETAILS.channels}</dd>
+                <dd>{details.channels}</dd>
               </div>
               <div className="asset-field">
                 <dt>First observed</dt>
-                <dd>{CTA_DETAILS.firstObserved}</dd>
+                <dd>{details.firstObserved}</dd>
               </div>
               <div className="asset-field">
                 <dt>Last observed</dt>
-                <dd>{CTA_DETAILS.lastObserved}</dd>
+                <dd>{details.lastObserved}</dd>
               </div>
             </dl>
           </article>
 
           <article className="result-card">
             <div className="result-card-head">Related Messages</div>
-            <div className="evidence-scroll">
-              <div className="evidence-table">
-                <div className="evidence-thead">
-                  <span>S.No</span>
-                  <span>Message Template</span>
-                  <span>Sender</span>
-                  <span>Confidence</span>
-                  <span>Attack counts</span>
-                  <span>Users affected</span>
-                  <span>First observed</span>
-                  <span>Last observed</span>
-                  <span>Channels</span>
-                  <span>Use Case</span>
-                </div>
-                {CTA_MESSAGES.map((row) => (
-                  <div key={row.id} className="evidence-row">
-                    <span>{row.id}</span>
-                    <span className="cell-ellipsis" title={row.template}>
-                      {row.template}
-                    </span>
-                    <span className="cell-ellipsis" title={row.sender}>
-                      {row.sender}
-                    </span>
-                    <span>
-                      <span className={`badge ${confidenceClass(row.confidence)}`}>
-                        {row.confidence}
-                      </span>
-                    </span>
-                    <span>{row.attackCounts}</span>
-                    <span>{row.usersAffected}</span>
-                    <span>{row.firstObserved}</span>
-                    <span>{row.lastObserved}</span>
-                    <span>{row.channel}</span>
-                    <span>{row.useCase}</span>
+            {messages.length === 0 ? (
+              <ResultEmptyPanel
+                title="No related messages"
+                description="This CTA is indexed but no message templates or senders have been linked to it yet."
+              />
+            ) : (
+              <div className="evidence-scroll">
+                <div className="evidence-table">
+                  <div className="evidence-thead">
+                    <span>S.No</span>
+                    <span>Message Template</span>
+                    <span>Sender</span>
+                    <span>Confidence</span>
+                    <span>Attack counts</span>
+                    <span>Users affected</span>
+                    <span>First observed</span>
+                    <span>Last observed</span>
+                    <span>Channels</span>
+                    <span>Use Case</span>
                   </div>
-                ))}
+                  {messages.map((row) => (
+                    <div key={row.id} className="evidence-row">
+                      <span>{row.id}</span>
+                      <span className="cell-ellipsis" title={row.template}>
+                        {row.template}
+                      </span>
+                      <span className="cell-ellipsis" title={row.sender}>
+                        {row.sender}
+                      </span>
+                      <span>
+                        <span className={`badge ${confidenceClass(row.confidence)}`}>
+                          {row.confidence}
+                        </span>
+                      </span>
+                      <span>{row.attackCounts}</span>
+                      <span>{row.usersAffected}</span>
+                      <span>{row.firstObserved}</span>
+                      <span>{row.lastObserved}</span>
+                      <span>{row.channel}</span>
+                      <span>{row.useCase}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
           </article>
         </div>
 
         <aside className="result-card related-card">
           <div className="result-card-head">Related Assets</div>
-          <ul className="related-list">
-            {CTA_RELATED.map((asset) => (
-              <li key={asset.id} className="related-item">
-                <p className="related-url">{asset.value}</p>
-                <p className="related-meta">
-                  <img src={relatedIcon(asset.kind)} alt="" width={16} height={16} />
-                  <span>{asset.kind}</span>
-                  <span className="related-dot" />
-                  <span>Reported by {asset.reportedBy}</span>
-                </p>
-              </li>
-            ))}
-          </ul>
+          {related.length === 0 ? (
+            <ResultEmptyPanel
+              title="No related assets"
+              description="Senders, patterns, and URLs will appear here when evidence is collected."
+            />
+          ) : (
+            <ul className="related-list">
+              {related.map((asset) => (
+                <li key={asset.id} className="related-item">
+                  <p className="related-url">{asset.value}</p>
+                  <p className="related-meta">
+                    <img src={relatedIcon(asset.kind)} alt="" width={16} height={16} />
+                    <span>{asset.kind}</span>
+                    <span className="related-dot" />
+                    <span>Reported by {asset.reportedBy}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
         </aside>
       </div>
     </div>

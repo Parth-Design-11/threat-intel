@@ -42,7 +42,7 @@ export function CreateKeyModal({ existingNames, onClose, onCreate }: CreateKeyMo
       <div className="modal" role="dialog" aria-labelledby="create-key-title">
         <div className="modal-header">
           <h2 id="create-key-title" className="modal-title">
-            Create New API
+            Create New API Key
           </h2>
           <button type="button" className="close-btn" aria-label="Close" onClick={onClose}>
             <img src={assets.iconClose} alt="" width={16} height={16} />
@@ -51,7 +51,7 @@ export function CreateKeyModal({ existingNames, onClose, onCreate }: CreateKeyMo
         <div className="modal-body">
           <label className="field">
             <span className="field-label">
-              API Name <span className="req">*</span>
+              API Key Name <span className="req">*</span>
             </span>
             <input
               className="field-input"
@@ -195,7 +195,7 @@ export function CreateKeyModal({ existingNames, onClose, onCreate }: CreateKeyMo
             disabled={!valid}
             onClick={() => onCreate({ name: trimmed, description: description.trim(), type: apiType, environment, expiry })}
           >
-            Create API
+            Create API Key
           </button>
         </div>
       </div>
