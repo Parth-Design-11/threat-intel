@@ -3,7 +3,7 @@ export const INSIGHTS_PERIODS = ["July 2026", "June 2026", "May 2026"] as const;
 export type InsightsPeriod = (typeof INSIGHTS_PERIODS)[number];
 
 export const INSIGHTS_SUMMARY = {
-  tenant: "Axis Bank",
+  tenant: "ICICI Bank",
   subtitle: "SMS phishing protection overview",
   usersProtected: "6.2M",
   usersProtectedDelta: "↑ 45% vs Jun",
