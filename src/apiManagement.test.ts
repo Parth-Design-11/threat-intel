@@ -15,10 +15,10 @@ describe("apiManagement helpers", () => {
     expect(ENDPOINTS_BY_TYPE["All APIs"]).toHaveLength(4);
   });
 
-  it("builds environment-based key ids", () => {
-    expect(buildKeyId("Production", "Prod API 123")).toBe("ti_prod_prodapi1230000000000");
-    expect(buildKeyId("Staging", "Hello")).toBe("ti_stg_hello000000000000000");
-    expect(buildKeyId("Development", "")).toBe("ti_dev_a4f2k9m2b8z1p5r0x7v9");
+  it("builds key ids from the name seed", () => {
+    expect(buildKeyId("Prod API 123")).toBe("ti_prodapi1230000000000");
+    expect(buildKeyId("Hello")).toBe("ti_hello000000000000000");
+    expect(buildKeyId("")).toBe("ti_a4f2k9m2b8z1p5r0x7v9");
   });
 
   it("masks key ids for UI display", () => {

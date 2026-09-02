@@ -28,6 +28,12 @@ import iconTrendUp from "./assets/figma/icon-trend-up.svg";
 import iconTrendDown from "./assets/figma/icon-trend-down.svg";
 import chartTrendLine from "./assets/figma/chart-trend-line.svg";
 import chartDot from "./assets/figma/chart-dot.svg";
+import threatMeterBg from "./assets/figma/threat-meter-bg.svg";
+import threatMeterNeedle from "./assets/figma/threat-meter-needle.svg";
+import threatMeterSegmentHigh from "./assets/figma/threat-meter-markers-1.svg";
+import threatMeterSegmentMid from "./assets/figma/threat-meter-markers-2.svg";
+import threatMeterSegmentLow from "./assets/figma/threat-meter-markers-3.svg";
+import threatMeterEllipse from "./assets/figma/threat-meter-ellipse.svg";
 
 export const assets = {
   logo,
@@ -60,4 +66,10 @@ export const assets = {
   iconTrendDown,
   chartTrendLine,
   chartDot,
+  threatMeterBg,
+  threatMeterNeedle,
+  threatMeterSegmentHigh,
+  threatMeterSegmentMid,
+  threatMeterSegmentLow,
+  threatMeterEllipse,
 };

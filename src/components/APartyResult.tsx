@@ -6,21 +6,15 @@ import {
   A_PARTY_RELATED,
   maskIdentifier,
   resolvePhoneResultState,
-  type EvidenceConfidence,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
 import { ResultEmptyPanel } from "./ResultEmptyPanel";
+import { ThreatScoreCard } from "./ThreatScoreCard";
 
 type APartyResultProps = {
   query: string;
   onBack: () => void;
 };
-
-function confidenceClass(level: EvidenceConfidence) {
-  if (level === "HIGH") return "is-conf-high";
-  if (level === "LOW") return "is-conf-low";
-  return "is-conf-medium";
-}
 
 export function APartyResult({ query, onBack }: APartyResultProps) {
   const masked = maskIdentifier(query);
@@ -138,7 +132,6 @@ export function APartyResult({ query, onBack }: APartyResultProps) {
                     <span>S.No</span>
                     <span>Message Template</span>
                     <span>CTA Value</span>
-                    <span>Confidence</span>
                     <span>Attack counts</span>
                     <span>Users affected</span>
                     <span>First observed</span>
@@ -155,11 +148,6 @@ export function APartyResult({ query, onBack }: APartyResultProps) {
                       <span className="cell-ellipsis" title={row.cta}>
                         {row.cta}
                       </span>
-                      <span>
-                        <span className={`badge ${confidenceClass(row.confidence)}`}>
-                          {row.confidence}
-                        </span>
-                      </span>
                       <span>{row.attackCounts}</span>
                       <span>{row.usersAffected}</span>
                       <span>{row.firstObserved}</span>
@@ -174,28 +162,33 @@ export function APartyResult({ query, onBack }: APartyResultProps) {
           </article>
         </div>
 
-        <aside className="result-card related-card">
-          <div className="result-card-head">Related Assets</div>
-          {related.length === 0 ? (
-            <ResultEmptyPanel
-              title="No related assets"
-              description="URLs, patterns, and other assets will appear here when evidence is collected."
-            />
-          ) : (
-            <ul className="related-list">
-              {related.map((asset) => (
-                <li key={asset.id} className="related-item">
-                  <p className="related-url">{asset.value}</p>
-                  <p className="related-meta">
-                    <img src={assets.iconLink} alt="" width={16} height={16} />
-                    <span>{asset.kind}</span>
-                    <span className="related-dot" />
-                    <span>Reported by {asset.reportedBy}</span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
+        <aside className="result-aside">
+          {state === "full" ? (
+            <ThreatScoreCard score={A_PARTY_DETAILS.threatScore} label={A_PARTY_DETAILS.threatLabel} />
+          ) : null}
+          <article className="result-card related-card">
+            <div className="result-card-head">Related Assets</div>
+            {related.length === 0 ? (
+              <ResultEmptyPanel
+                title="No related assets"
+                description="URLs, patterns, and other assets will appear here when evidence is collected."
+              />
+            ) : (
+              <ul className="related-list">
+                {related.map((asset) => (
+                  <li key={asset.id} className="related-item">
+                    <p className="related-url">{asset.value}</p>
+                    <p className="related-meta">
+                      <img src={assets.iconLink} alt="" width={16} height={16} />
+                      <span>{asset.kind}</span>
+                      <span className="related-dot" />
+                      <span>Reported by {asset.reportedBy}</span>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </article>
         </aside>
       </div>
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { resolveExpiryDate } from "../apiManagement";
 import { assets } from "../assets";
-import { API_TYPES, ENDPOINTS_BY_TYPE, ENVIRONMENTS, EXPIRY_OPTIONS } from "../data";
+import { API_TYPES, ENDPOINTS_BY_TYPE, EXPIRY_OPTIONS } from "../data";
 
 type CreateKeyModalProps = {
   existingNames: string[];
@@ -10,7 +10,6 @@ type CreateKeyModalProps = {
     name: string;
     description: string;
     type: (typeof API_TYPES)[number];
-    environment: (typeof ENVIRONMENTS)[number];
     expiry: (typeof EXPIRY_OPTIONS)[number];
   }) => void;
 };
@@ -19,9 +18,8 @@ export function CreateKeyModal({ existingNames, onClose, onCreate }: CreateKeyMo
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [apiType, setApiType] = useState<(typeof API_TYPES)[number]>("A-Party Risk Score");
-  const [environment, setEnvironment] = useState<(typeof ENVIRONMENTS)[number]>("Production");
   const [expiry, setExpiry] = useState<(typeof EXPIRY_OPTIONS)[number]>("30 days");
-  const [openMenu, setOpenMenu] = useState<"type" | "environment" | "expiry" | null>(null);
+  const [openMenu, setOpenMenu] = useState<"type" | "expiry" | null>(null);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -113,42 +111,6 @@ export function CreateKeyModal({ existingNames, onClose, onCreate }: CreateKeyMo
 
           <div className="field">
             <span className="field-label">
-              Environment <span className="req">*</span>
-            </span>
-            <div className="select-menu">
-              <button
-                type="button"
-                className="field-select"
-                onClick={() => setOpenMenu(openMenu === "environment" ? null : "environment")}
-              >
-                {environment}
-                <img src={assets.iconChevron} alt="" width={16} height={16} />
-              </button>
-              {openMenu === "environment" ? (
-                <div className="select-list">
-                  {ENVIRONMENTS.map((option) => (
-                    <button
-                      key={option}
-                      type="button"
-                      className={`select-option${option === environment ? " is-active" : ""}`}
-                      onClick={() => {
-                        setEnvironment(option);
-                        setOpenMenu(null);
-                      }}
-                    >
-                      {option}
-                    </button>
-                  ))}
-                </div>
-              ) : null}
-            </div>
-            <span className="field-help">
-              Key IDs will use the `ti_{environment === "Production" ? "prod" : environment === "Staging" ? "stg" : "dev"}` prefix.
-            </span>
-          </div>
-
-          <div className="field">
-            <span className="field-label">
               Expiry <span className="req">*</span>
             </span>
             <div className="select-menu">
@@ -193,7 +155,7 @@ export function CreateKeyModal({ existingNames, onClose, onCreate }: CreateKeyMo
             type="button"
             className="btn-primary"
             disabled={!valid}
-            onClick={() => onCreate({ name: trimmed, description: description.trim(), type: apiType, environment, expiry })}
+            onClick={() => onCreate({ name: trimmed, description: description.trim(), type: apiType, expiry })}
           >
             Create API Key
           </button>

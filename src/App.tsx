@@ -90,7 +90,7 @@ export default function App() {
           existingNames={keys.map((key) => key.name)}
           onClose={() => setModal(null)}
           onCreate={(payload) => {
-            const keyId = buildKeyId(payload.environment, payload.name + Date.now().toString(36));
+            const keyId = buildKeyId(payload.name + Date.now().toString(36));
             const endpoint = ENDPOINTS_BY_TYPE[payload.type][0]?.path;
             const created: ManagedApi = {
               id: String(Date.now()),
@@ -98,7 +98,6 @@ export default function App() {
               keyId,
               maskedKeyId: maskKeyId(keyId),
               type: payload.type,
-              environment: payload.environment,
               createdBy: "KD",
               createdOn: "19 Aug 2026",
               lastUsed: "Never",

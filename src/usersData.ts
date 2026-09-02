@@ -1,4 +1,4 @@
-export type UserRole = "Admin" | "Analyst" | "Viewer";
+export type UserRole = "Admin" | "Customer Support";
 export type UserStatus = "PENDING" | "Active" | "INACTIVE";
 
 export type ManagedUser = {
@@ -11,7 +11,7 @@ export type ManagedUser = {
   status: UserStatus;
 };
 
-export const USER_ROLES: UserRole[] = ["Admin", "Analyst", "Viewer"];
+export const USER_ROLES: UserRole[] = ["Admin", "Customer Support"];
 export const USER_STATUSES: UserStatus[] = ["PENDING", "Active", "INACTIVE"];
 
 export const INITIAL_USERS: ManagedUser[] = [
@@ -46,7 +46,7 @@ export const INITIAL_USERS: ManagedUser[] = [
     id: "u4",
     name: "Aryan Jain",
     email: "aryan@IOH.com",
-    role: "Analyst",
+    role: "Customer Support",
     lastLoginDate: "9 Dec, 2025",
     lastLoginTime: "4:22 PM",
     status: "Active",
@@ -64,7 +64,7 @@ export const INITIAL_USERS: ManagedUser[] = [
     id: "u6",
     name: "Divya Jain",
     email: "divya@IOH.com",
-    role: "Viewer",
+    role: "Customer Support",
     lastLoginDate: "8 Dec, 2025",
     lastLoginTime: "9:41 AM",
     status: "Active",
@@ -73,7 +73,7 @@ export const INITIAL_USERS: ManagedUser[] = [
     id: "u7",
     name: "Raj Patel",
     email: "raj@IOH.com",
-    role: "Analyst",
+    role: "Customer Support",
     lastLoginDate: "10 Dec, 2025",
     lastLoginTime: "7:05 PM",
     status: "Active",

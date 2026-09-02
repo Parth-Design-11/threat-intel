@@ -8,7 +8,6 @@ import { ApiTabs, type ApiTab } from "./ApiTabs";
 const COLUMNS = [
   "Key Name",
   "Type",
-  "Environment",
   "Created By",
   "Created On",
   "Last Used",
@@ -133,9 +132,6 @@ export function AccessKeysPage({ keys, onCreate, onUpdateKeys, onChangeTab }: Ac
                     <span className="cell-ellipsis" title={ENDPOINTS_BY_TYPE[key.type].map((item) => `${item.method} ${item.path}`).join("\n")}>
                       {key.type}
                     </span>
-                  </div>
-                  <div className="td is-muted">
-                    <span className="cell-ellipsis">{key.environment}</span>
                   </div>
                   <div className="td">
                     <span className="cell-ellipsis">{key.createdBy}</span>

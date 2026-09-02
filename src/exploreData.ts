@@ -88,7 +88,6 @@ export const CTA_NO_EVIDENCE_DETAILS = {
   assetType: "URL",
   identifiedOn: "Aug 27, 2026 10:00 AM",
   ctaType: "Unknown",
-  urgency: "—",
   relatedMessages: "0",
   totalAttackCounts: "0",
   channels: "—",
@@ -105,6 +104,8 @@ export const A_PARTY_DETAILS = {
   totalAttackCounts: "30,938",
   firstObserved: "Jun 22, 2026",
   lastObserved: "Jul 25, 2026",
+  threatScore: 98,
+  threatLabel: "HIGH RISK",
 };
 
 export const A_PARTY_EVIDENCES: EvidenceRow[] = [
@@ -421,7 +422,6 @@ export const CTA_DETAILS = {
   assetType: "URL",
   identifiedOn: "Jul 18, 2026 11:02 AM",
   ctaType: "Verify account",
-  urgency: "High",
   shortener: "bit.ly",
   relatedMessages: "7",
   totalAttackCounts: "18,642",

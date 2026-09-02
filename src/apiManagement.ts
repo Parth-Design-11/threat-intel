@@ -38,16 +38,10 @@ export const ENDPOINTS_BY_TYPE: Record<ApiType, EndpointSpec[]> = {
   ],
 };
 
-const ENV_PREFIX: Record<ApiEnvironment, string> = {
-  Production: "prod",
-  Staging: "stg",
-  Development: "dev",
-};
-
-export function buildKeyId(environment: ApiEnvironment, seed: string): string {
+export function buildKeyId(seed: string): string {
   const compact = seed.toLowerCase().replace(/[^a-z0-9]/g, "");
   const suffix = (compact || "a4f2k9m2b8z1p5r0x7v9").slice(0, 20).padEnd(20, "0");
-  return `ti_${ENV_PREFIX[environment]}_${suffix}`;
+  return `ti_${suffix}`;
 }
 
 export function maskKeyId(keyId: string): string {

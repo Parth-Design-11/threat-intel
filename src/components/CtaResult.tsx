@@ -6,7 +6,6 @@ import {
   CTA_RELATED,
   displayQuery,
   resolveCtaResultState,
-  type EvidenceConfidence,
   type RelatedAsset,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
@@ -16,12 +15,6 @@ type CtaResultProps = {
   query: string;
   onBack: () => void;
 };
-
-function confidenceClass(level: EvidenceConfidence) {
-  if (level === "HIGH") return "is-conf-high";
-  if (level === "LOW") return "is-conf-low";
-  return "is-conf-medium";
-}
 
 function relatedIcon(kind: RelatedAsset["kind"]) {
   if (kind === "URL") return assets.iconLink;
@@ -115,10 +108,6 @@ export function CtaResult({ query, onBack }: CtaResultProps) {
                 <dd>{details.ctaType}</dd>
               </div>
               <div className="asset-field">
-                <dt>Urgency</dt>
-                <dd>{details.urgency}</dd>
-              </div>
-              <div className="asset-field">
                 <dt>Related Messages</dt>
                 <dd>{details.relatedMessages}</dd>
               </div>
@@ -155,7 +144,6 @@ export function CtaResult({ query, onBack }: CtaResultProps) {
                     <span>S.No</span>
                     <span>Message Template</span>
                     <span>Sender</span>
-                    <span>Confidence</span>
                     <span>Attack counts</span>
                     <span>Users affected</span>
                     <span>First observed</span>
@@ -171,11 +159,6 @@ export function CtaResult({ query, onBack }: CtaResultProps) {
                       </span>
                       <span className="cell-ellipsis" title={row.sender}>
                         {row.sender}
-                      </span>
-                      <span>
-                        <span className={`badge ${confidenceClass(row.confidence)}`}>
-                          {row.confidence}
-                        </span>
                       </span>
                       <span>{row.attackCounts}</span>
                       <span>{row.usersAffected}</span>

@@ -34,7 +34,6 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
   const enabledKeys = keys.filter((key) => key.status === "Active");
   const initialApi = enabledKeys[0] ?? keys[0] ?? null;
   const [selectedId, setSelectedId] = useState(initialApi?.id ?? "");
-  const [mode, setMode] = useState<"Sandbox" | "Live">("Sandbox");
   const [type, setType] = useState<PlaygroundType>(initialApi ? mapType(initialApi.type) : "risk-score");
   const [request, setRequest] = useState(PLAYGROUND_EXAMPLES[initialApi ? mapType(initialApi.type) : "risk-score"]);
   const [result, setResult] = useState<PlaygroundResult | null>(null);
@@ -129,7 +128,7 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
             >
               {keys.map((item) => (
                 <option key={item.id} value={item.id}>
-                  {`${item.name} · ${item.type} · ${item.environment}${item.status === "Active" ? "" : ` · ${item.status}`}`}
+                  {`${item.name} · ${item.type}${item.status === "Active" ? "" : ` · ${item.status}`}`}
                 </option>
               ))}
             </select>
@@ -157,14 +156,6 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
               </select>
             </label>
           ) : null}
-          <div className="mode-toggle">
-            <button type="button" className={`toggle-pill${mode === "Sandbox" ? " is-active" : ""}`} onClick={() => setMode("Sandbox")}>
-              Sandbox
-            </button>
-            <button type="button" className={`toggle-pill${mode === "Live" ? " is-active is-live" : ""}`} onClick={() => setMode("Live")}>
-              Live
-            </button>
-          </div>
           <div className="playground-actions">
             <button
               type="button"
@@ -190,7 +181,7 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
                 <img src={assets.iconCopy} alt="" width={16} height={16} />
               </button>
             </div>
-            <div className={`request-preview${mode === "Live" ? " is-live" : ""}`}>
+            <div className="request-preview">
               <p>{`${candidateEndpoints[0]?.method ?? "POST"} https://api.wisely.ai${selectedEndpoint || candidateEndpoints[0]?.path}`}</p>
               <p>{`Authorization: Bearer ${selectedApi.maskedKeyId}`}</p>
               <p>Content-Type: application/json</p>
@@ -213,7 +204,7 @@ export function PlaygroundPage({ keys, onCreate, onChangeTab }: PlaygroundPagePr
                     {result.status}
                   </span>
                 ) : null}
-                {result ? <span className="playground-meta-text">142 ms · req_8f2k9m4b · {mode}</span> : null}
+                {result ? <span className="playground-meta-text">142 ms · req_8f2k9m4b</span> : null}
                 <button
                   type="button"
                   className="copy-btn"

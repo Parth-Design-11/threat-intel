@@ -1,0 +1,11 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="200" height="100" viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Meter Markers">
+<path id="Ellipse" d="M3 100C1.34315 100 -0.00469733 98.6561 0.0449889 97C0.646864 76.9387 7.27405 57.4962 19.0983 41.2215C30.9225 24.9468 47.3656 12.6359 66.2591 5.86418C67.8188 5.30516 69.5133 6.17176 70.0253 7.74752L77.4418 30.5729C77.9537 32.1486 77.0886 33.835 75.5362 34.414C62.6657 39.2145 51.469 47.7061 43.3688 58.855C35.2686 70.004 30.6527 83.2767 30.0643 97.0007C29.9933 98.6561 28.6569 100 27 100H3Z" fill="url(#paint0_linear_0_16)"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_0_16" x1="75" y1="10.4998" x2="32" y2="49.9998" gradientUnits="userSpaceOnUse">
+<stop offset="0.218715" stop-color="#FECA2A"/>
+<stop offset="1" stop-color="#8ABF2F"/>
+</linearGradient>
+</defs>
+</svg>

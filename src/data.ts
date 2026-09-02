@@ -18,7 +18,6 @@ export type ManagedApi = {
   keyId: string;
   maskedKeyId: string;
   type: ApiType;
-  environment: ApiEnvironment;
   createdBy: string;
   createdOn: string;
   lastUsed: string;
@@ -49,7 +48,6 @@ export const INITIAL_KEYS: ManagedApi[] = [
     keyId: "ti_prod_a4f2k9m2b8z1p5r0x7v9",
     maskedKeyId: "ti_prod_a4f2••••x7v9",
     type: "A-Party Risk Score",
-    environment: "Production",
     createdBy: "Sarah Chen",
     createdOn: "15 Jan 2026",
     lastUsed: "2 hours ago",
@@ -64,7 +62,6 @@ export const INITIAL_KEYS: ManagedApi[] = [
     keyId: "ti_stg_b7m4p8r0x2n6q1l5k3w9",
     maskedKeyId: "ti_stg_b7m4••••k3w9",
     type: "B-Party Vulnerability",
-    environment: "Staging",
     createdBy: "James Wilson",
     createdOn: "22 Mar 2026",
     lastUsed: "Yesterday",
@@ -79,7 +76,6 @@ export const INITIAL_KEYS: ManagedApi[] = [
     keyId: "ti_dev_c1v9m4t7q3p8x2k6n5r1",
     maskedKeyId: "ti_dev_c1v9••••n5r1",
     type: "CTA Check",
-    environment: "Development",
     createdBy: "Maria Garcia",
     createdOn: "10 Apr 2026",
     lastUsed: "Never",
@@ -94,7 +90,6 @@ export const INITIAL_KEYS: ManagedApi[] = [
     keyId: "ti_prod_m9h2q8p4r1t6v3x5k7n0",
     maskedKeyId: "ti_prod_m9h2••••k7n0",
     type: "Message Pattern Check",
-    environment: "Production",
     createdBy: "Alex Kumar",
     createdOn: "05 Jun 2026",
     lastUsed: "18 minutes ago",
@@ -109,7 +104,6 @@ export const INITIAL_KEYS: ManagedApi[] = [
     keyId: "ti_prod_u4n2i8v6e0r9s1a3l5l7",
     maskedKeyId: "ti_prod_u4n2••••l5l7",
     type: "All APIs",
-    environment: "Production",
     createdBy: "Sarah Chen",
     createdOn: "18 Jul 2026",
     lastUsed: "5 minutes ago",
@@ -123,7 +117,6 @@ export const INITIAL_KEYS: ManagedApi[] = [
     keyId: "ti_dev_l2g8a1c9y4o7m6d3p5x0",
     maskedKeyId: "ti_dev_l2g8••••p5x0",
     type: "A-Party Risk Score",
-    environment: "Development",
     createdBy: "James Wilson",
     createdOn: "03 Sep 2025",
     lastUsed: "12 days ago",

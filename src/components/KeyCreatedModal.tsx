@@ -79,10 +79,6 @@ export function KeyCreatedModal({ api, onClose }: KeyCreatedModalProps) {
               <p>{api.type}</p>
             </div>
             <div>
-              <span className="field-label">Environment</span>
-              <p>{api.environment}</p>
-            </div>
-            <div>
               <span className="field-label">Expiry</span>
               <p>{api.expiry}</p>
             </div>
