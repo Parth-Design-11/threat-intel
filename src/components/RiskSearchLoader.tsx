@@ -3,9 +3,9 @@ import { assets } from "../assets";
 import { maskIdentifier } from "../exploreData";
 
 const PHASES = [
-  { id: "fetch", label: "Fetching the data from 10+ sources", duration: 3500 },
-  { id: "classify", label: "Classifying evidences", duration: 8000 },
-  { id: "score", label: "Calculating Risk score", duration: 4500 },
+  { id: "fetch", label: "Fetching the data from 10+ sources", duration: 1800 },
+  { id: "classify", label: "Classifying evidences", duration: 1200 },
+  { id: "score", label: "Calculating Risk score", duration: 1800 },
 ] as const;
 
 type LoaderPhase = (typeof PHASES)[number]["id"];
@@ -101,7 +101,7 @@ const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, index) => {
     keep,
     size: PARTICLE_SIZE,
     color: PARTICLE_COLOR,
-    delay: `${unit(index + 29) * 1.8}s`,
+    delay: `${unit(index + 29) * 0.45}s`,
     fetch: FETCH_POINTS[index],
     classify: {
       x: tip.x * 0.72 + Math.cos(ringAngle) * classifyRadius,
@@ -169,7 +169,7 @@ export function RiskSearchLoader({ query, onDone, onBack }: RiskSearchLoaderProp
                 height: particle.size,
                 transform: particleTransform(phase, index),
                 ["--drift-delay" as string]: particle.delay,
-                ["--move-delay" as string]: `${particle.cluster * 720 + Math.floor(index / 7) * 140}ms`,
+                ["--move-delay" as string]: `${particle.cluster * 48 + Math.floor(index / 7) * 10}ms`,
                 ["--axis-index" as string]: String(particle.cluster),
               }}
             >
@@ -216,7 +216,7 @@ export function RiskSearchLoader({ query, onDone, onBack }: RiskSearchLoaderProp
             return (
               <p key={item.id} className={`profile-loader-status ${state}`} aria-hidden={state !== "is-in"}>
                 {item.label.split(" ").map((word, wordIndex) => (
-                  <span key={`${item.id}-${word}`} style={{ animationDelay: `${80 + wordIndex * 70}ms` }}>
+                  <span key={`${item.id}-${word}`} style={{ animationDelay: `${32 + wordIndex * 36}ms` }}>
                     {word}
                   </span>
                 ))}

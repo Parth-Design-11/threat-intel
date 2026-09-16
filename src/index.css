@@ -2075,16 +2075,16 @@ img {
   background: #8b919c;
   box-shadow: none;
   transition:
-    transform 1.15s cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 0.75s ease;
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease;
   transition-delay: 0s;
   will-change: transform, opacity;
   pointer-events: none;
 }
 
 .profile-loader.is-classify .profile-loader-particle {
-  transition-duration: 2.8s, 0.9s, 0.5s;
-  transition-delay: var(--move-delay), 0.1s, 0s;
+  transition-duration: 0.5s, 0.28s, 0.2s;
+  transition-delay: var(--move-delay), 0.02s, 0s;
   transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1), ease, ease;
 }
 
@@ -2096,7 +2096,7 @@ img {
 }
 
 .profile-loader.is-fetch .profile-loader-particle i {
-  animation: profile-loader-drift 2.8s ease-in-out infinite alternate;
+  animation: profile-loader-drift 1.1s ease-in-out infinite alternate;
   animation-delay: var(--drift-delay, 0s);
 }
 
@@ -2124,10 +2124,10 @@ img {
   margin: -44px 0 0 -44px;
   color: #1c73e8;
   filter: drop-shadow(0 8px 16px rgba(28, 115, 232, 0.18));
-  animation: profile-loader-scan 5s ease-in-out infinite;
+  animation: profile-loader-scan 1.8s ease-in-out infinite;
   transition:
-    opacity 0.7s ease,
-    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.32s ease,
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
 }
 
@@ -2162,8 +2162,8 @@ img {
   opacity: 0;
   transform: scale(0.72);
   transition:
-    opacity 0.8s ease 0.15s,
-    transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.35s ease 0.04s,
+    transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
@@ -2182,8 +2182,8 @@ img {
 
 .profile-loader.is-score .profile-loader-axis line {
   animation:
-    profile-loader-axis-draw 900ms ease-out calc(var(--axis-index) * 90ms) forwards,
-    profile-loader-axis-calc 1.96s ease-in-out calc(1s + var(--axis-index) * 280ms) infinite;
+    profile-loader-axis-draw 420ms ease-out calc(var(--axis-index) * 45ms) forwards,
+    profile-loader-axis-calc 0.9s ease-in-out calc(0.38s + var(--axis-index) * 80ms) infinite;
 }
 
 .profile-loader-axis circle {
@@ -2195,8 +2195,8 @@ img {
 
 .profile-loader.is-score .profile-loader-axis circle {
   animation:
-    profile-loader-axis-dot 480ms ease-out calc(var(--axis-index) * 90ms) forwards,
-    profile-loader-axis-dot-calc 1.96s ease-in-out calc(1s + var(--axis-index) * 280ms) infinite;
+    profile-loader-axis-dot 280ms ease-out calc(var(--axis-index) * 45ms) forwards,
+    profile-loader-axis-dot-calc 0.9s ease-in-out calc(0.38s + var(--axis-index) * 80ms) infinite;
 }
 
 .profile-loader-axis text {
@@ -2208,8 +2208,8 @@ img {
 
 .profile-loader.is-score .profile-loader-axis text {
   animation:
-    profile-loader-axis-label 420ms ease-out calc(180ms + var(--axis-index) * 90ms) forwards,
-    profile-loader-axis-label-calc 1.96s ease-in-out calc(1s + var(--axis-index) * 280ms) infinite;
+    profile-loader-axis-label 260ms ease-out calc(80ms + var(--axis-index) * 45ms) forwards,
+    profile-loader-axis-label-calc 0.9s ease-in-out calc(0.38s + var(--axis-index) * 80ms) infinite;
 }
 
 .profile-loader-hub {
@@ -2223,8 +2223,8 @@ img {
 
 .profile-loader.is-score .profile-loader-hub {
   animation:
-    profile-loader-axis-dot 420ms ease-out 80ms forwards,
-    profile-loader-hub-calc 1.4s ease-in-out 1s infinite;
+    profile-loader-axis-dot 240ms ease-out 40ms forwards,
+    profile-loader-hub-calc 0.7s ease-in-out 0.32s infinite;
 }
 
 .profile-loader-copy {
@@ -2265,11 +2265,11 @@ img {
 }
 
 .profile-loader-status.is-in span {
-  animation: profile-loader-word-in 560ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: profile-loader-word-in 320ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .profile-loader-status.is-out {
-  animation: profile-loader-status-out 420ms ease forwards;
+  animation: profile-loader-status-out 220ms ease forwards;
 }
 
 .profile-loader-status.is-out span {
@@ -2285,7 +2285,7 @@ img {
 
 .profile-loader-ellipsis::after {
   content: "";
-  animation: profile-loader-dots 1.2s steps(4, end) infinite;
+  animation: profile-loader-dots 0.8s steps(4, end) infinite;
 }
 
 .profile-loader-steps {
