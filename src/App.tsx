@@ -18,6 +18,7 @@ import { Sidebar, type AppSection } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { UsageLogsPage } from "./components/UsageLogsPage";
 import { INITIAL_KEYS, type ManagedApi } from "./data";
+import { useDevOverride } from "./devtools";
 import { INITIAL_USERS, type ManagedUser } from "./usersData";
 
 type Modal = "create" | "created" | "add-user" | "edit-user" | null;
@@ -27,6 +28,9 @@ export default function App() {
   const [tab, setTab] = useState<ApiTab>("keys");
   const [modal, setModal] = useState<Modal>(null);
   const [keys, setKeys] = useState<ManagedApi[]>(INITIAL_KEYS);
+  const viewSection = useDevOverride("app.section", section);
+  const viewTab = useDevOverride("api.tab", tab);
+  const keyVolume = useDevOverride("api.keys", keys.length === 0 ? "none" : "typical");
   const [users, setUsers] = useState<ManagedUser[]>(INITIAL_USERS);
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
   const [createdApi, setCreatedApi] = useState<ManagedApi | null>(null);
@@ -35,11 +39,11 @@ export default function App() {
     <div className="shell">
       <TopBar />
       <div className="body">
-        <Sidebar active={section} onSelect={setSection} />
+        <Sidebar active={viewSection} onSelect={setSection} />
         <main className="main">
-          {section === "dashboard" ? <InsightsPage /> : null}
-          {section === "explore" ? <ExplorePage /> : null}
-          {section === "settings" ? (
+          {viewSection === "dashboard" ? <InsightsPage /> : null}
+          {viewSection === "explore" ? <ExplorePage /> : null}
+          {viewSection === "settings" ? (
             <SettingsPage
               users={users}
               onAddUser={() => {
@@ -64,23 +68,27 @@ export default function App() {
               }}
             />
           ) : null}
-          {section === "api" && tab === "keys" ? (
+          {viewSection === "api" && viewTab === "keys" ? (
             <AccessKeysPage
-              keys={keys}
+              keys={keyVolume === "none" ? [] : keys}
               onCreate={() => setModal("create")}
               onUpdateKeys={setKeys}
               onChangeTab={setTab}
             />
           ) : null}
-          {section === "api" && tab === "usage" ? (
+          {viewSection === "api" && viewTab === "usage" ? (
             <UsageLogsPage
-              keys={keys}
+              keys={keyVolume === "none" ? [] : keys}
               onCreate={() => setModal("create")}
               onChangeTab={setTab}
             />
           ) : null}
-          {section === "api" && tab === "playground" ? (
-            <PlaygroundPage keys={keys} onCreate={() => setModal("create")} onChangeTab={setTab} />
+          {viewSection === "api" && viewTab === "playground" ? (
+            <PlaygroundPage
+              keys={keyVolume === "none" ? [] : keys}
+              onCreate={() => setModal("create")}
+              onChangeTab={setTab}
+            />
           ) : null}
         </main>
       </div>

@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { assets } from "../assets";
+import { resolveCtaResultState, resolvePhoneResultState } from "../exploreData";
 import { addExploreHistory, getExploreHistory, type ExploreHistoryEntry } from "../exploreHistory";
+import { useDevOverride } from "../devtools";
+import { APartyProfileResult } from "./APartyProfileResult";
 import { APartyResult } from "./APartyResult";
 import { CtaResult } from "./CtaResult";
+import { RiskSearchLoader } from "./RiskSearchLoader";
 import { MessagePatternDetail } from "./MessagePatternDetail";
 import { MessagePatternsList } from "./MessagePatternsList";
 
@@ -65,6 +69,7 @@ export function ExplorePage() {
   const [type, setType] = useState<ExploreType>("risk-score");
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [aPartyLoading, setAPartyLoading] = useState(false);
   const [error, setError] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [selectedPatternId, setSelectedPatternId] = useState<string | null>(null);
@@ -78,6 +83,7 @@ export function ExplorePage() {
     setHistoryOpen(false);
     setSelectedPatternId(null);
     setSubmitted(false);
+    setAPartyLoading(false);
     setError("");
   }, [type]);
 
@@ -116,6 +122,7 @@ export function ExplorePage() {
     setHistory(getExploreHistory(type));
     setHistoryOpen(false);
     setSubmitted(true);
+    setAPartyLoading(type === "risk-score");
   }
 
   function submit(event?: FormEvent) {
@@ -127,6 +134,45 @@ export function ExplorePage() {
     runSearch(entry.query);
   }
 
+  const aParty = useDevOverride(
+    "explore.aParty",
+    type === "risk-score" && submitted ? resolvePhoneResultState(query) : null,
+  );
+  const aPartyLayout = useDevOverride<"current" | "profile">("explore.aParty.layout", "current");
+  const cta = useDevOverride(
+    "explore.cta",
+    type === "cta" && submitted ? resolveCtaResultState(query) : null,
+  );
+
+  if (aPartyLoading) {
+    return (
+      <RiskSearchLoader
+        query={query.trim() || "+919876543210"}
+        onDone={() => setAPartyLoading(false)}
+        onBack={() => {
+          setAPartyLoading(false);
+          setSubmitted(false);
+        }}
+      />
+    );
+  }
+
+  if (aParty) {
+    const resultProps = {
+      query: query.trim() || "+919876543210",
+      onBack: () => setSubmitted(false),
+    };
+    return aPartyLayout === "profile" ? (
+      <APartyProfileResult {...resultProps} />
+    ) : (
+      <APartyResult {...resultProps} />
+    );
+  }
+
+  if (cta) {
+    return <CtaResult query={query.trim() || "https://bit.ly/abc"} onBack={() => setSubmitted(false)} />;
+  }
+
   if (type === "message-patterns" && selectedPatternId) {
     return (
       <MessagePatternDetail
@@ -134,14 +180,6 @@ export function ExplorePage() {
         onBack={() => setSelectedPatternId(null)}
       />
     );
-  }
-
-  if (submitted && type === "risk-score") {
-    return <APartyResult query={query} onBack={() => setSubmitted(false)} />;
-  }
-
-  if (submitted && type === "cta") {
-    return <CtaResult query={query} onBack={() => setSubmitted(false)} />;
   }
 
   const isPatternsTab = type === "message-patterns";

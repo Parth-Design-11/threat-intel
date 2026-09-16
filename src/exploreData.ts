@@ -108,6 +108,319 @@ export const A_PARTY_DETAILS = {
   threatLabel: "HIGH RISK",
 };
 
+export type ProfileTone = "good" | "moderate" | "risk" | "neutral";
+
+export type ProfileMetric = {
+  label: string;
+  value: string;
+  hint?: string;
+  alert?: string;
+  tone?: ProfileTone;
+};
+
+export type ProfileWindowRow = {
+  label: string;
+  hint?: string;
+  values: [string, string, string];
+};
+
+export type APartyProfile = {
+  risk: {
+    score: string;
+    label: string;
+    tone: ProfileTone;
+    description: string;
+    weights: {
+      label: string;
+      weight: string;
+      value: string;
+      strength: number;
+      threshold: string;
+      thresholdStrength: number;
+    }[];
+  };
+  identity: { verdict: ProfileMetric; metrics: ProfileMetric[] };
+  vintage: { metrics: ProfileMetric[] };
+  volatility: { metrics: ProfileMetric[] };
+  stability: { metrics: ProfileMetric[] };
+  activity: { metrics: ProfileMetric[]; windows: ProfileWindowRow[] };
+  content: { metrics: ProfileMetric[] };
+  network: { metrics: ProfileMetric[]; signature: string };
+};
+
+export const A_PARTY_PROFILE: APartyProfile = {
+  risk: {
+    score: "98",
+    label: "HIGH RISK",
+    tone: "risk",
+    description: "Transparent composite from scam ratio, volume, fanout, burst, night activity, and unique patterns.",
+    weights: [
+      { label: "Scam ratio", weight: "0.35", value: "0.82", strength: 0.82, threshold: "0.25", thresholdStrength: 0.25 },
+      { label: "Scam messages", weight: "0.20", value: "25,368", strength: 0.88, threshold: "1,200", thresholdStrength: 0.22 },
+      { label: "Unique recipients", weight: "0.15", value: "14,208", strength: 0.76, threshold: "850", thresholdStrength: 0.28 },
+      { label: "Burst score", weight: "0.10", value: "0.91", strength: 0.91, threshold: "0.35", thresholdStrength: 0.35 },
+      { label: "Fanout ratio", weight: "0.10", value: "18.4", strength: 0.8, threshold: "4.0", thresholdStrength: 0.3 },
+      { label: "Night activity", weight: "0.05", value: "0.47", strength: 0.47, threshold: "0.30", thresholdStrength: 0.3 },
+      { label: "Unique scam patterns", weight: "0.05", value: "11", strength: 0.7, threshold: "3", thresholdStrength: 0.24 },
+    ],
+  },
+  identity: {
+    verdict: {
+      label: "Device identity",
+      value: "Unstable",
+      tone: "risk",
+      hint: "MSISDN hops across device/IMEI signatures inconsistent with normal usage.",
+      alert: "This MSISDN hopped across device and IMEI signatures in a pattern inconsistent with a single-user handset.",
+    },
+    metrics: [
+      { label: "Number type", value: "Personal", hint: "M2M vs personal classification." },
+      { label: "Home network", value: "Indosat" },
+      { label: "Original circle", value: "Jakarta" },
+      { label: "Original operator", value: "Indosat" },
+      { label: "Device TAC", value: "35388211" },
+      {
+        label: "Device OEM",
+        value: "Xiaomi · 3 OEMs in 90d",
+        tone: "risk",
+        alert: "The number rotated across 3 device manufacturers in 90 days, which is inconsistent with a single-user handset.",
+      },
+      { label: "IMSI prefix", value: "51010••••" },
+      {
+        label: "Fingerprint hops",
+        value: "7 in 90 days",
+        tone: "risk",
+        hint: "IMEI / OEM / LAC combination changes.",
+        alert: "IMEI, OEM, and LAC combinations changed 7 times in 90 days — well above a typical personal-line baseline.",
+      },
+    ],
+  },
+  vintage: {
+    metrics: [
+      {
+        label: "Age on network",
+        value: "14 months",
+        tone: "moderate",
+        alert: "Tenure is short relative to the outbound volume and fanout on this line.",
+      },
+      { label: "First on network", value: "Apr 30, 2025", tone: "good" },
+      { label: "Last seen on network", value: "Jul 25, 2026", tone: "good" },
+      { label: "VLR first (signature)", value: "Jun 8, 2026", hint: "Age of the current device signature, not the number." },
+      { label: "VLR latest (signature)", value: "Jul 25, 2026" },
+      {
+        label: "Signature age",
+        value: "47 days",
+        tone: "risk",
+        alert: "The current device signature is only 47 days old, despite a 14-month number history.",
+      },
+    ],
+  },
+  volatility: {
+    metrics: [
+      {
+        label: "SIM / device churn",
+        value: "High",
+        tone: "risk",
+        hint: "How often IMEI, OEM, and LAC change for this MSISDN.",
+        alert: "IMEI, OEM, and LAC change far more often than a stable personal line.",
+      },
+      { label: "IMEI changes", value: "5" },
+      { label: "OEM changes", value: "3" },
+      { label: "LAC changes", value: "12" },
+      {
+        label: "Avg signature lifetime",
+        value: "11 days",
+        tone: "risk",
+        alert: "Each device signature lasts only 11 days on average before the combination changes again.",
+      },
+      {
+        label: "Current combo age",
+        value: "6 days",
+        tone: "risk",
+        alert: "The current IMEI / OEM / LAC combo is only 6 days old, indicating an active hop.",
+      },
+    ],
+  },
+  stability: {
+    metrics: [
+      { label: "Number recycled", value: "0", tone: "good", hint: "dt_deactivated → reissue tracking." },
+      { label: "Last deactivation", value: "—" },
+      { label: "Reissue gap", value: "—" },
+      { label: "Reuse risk", value: "Low", tone: "good" },
+    ],
+  },
+  activity: {
+    metrics: [
+      { label: "DND status", value: "No" },
+      { label: "Home carrier", value: "Indosat" },
+      { label: "Home circle", value: "Jakarta" },
+    ],
+    windows: [
+      { label: "Message volume", hint: "SMS / WhatsApp / email classified events.", values: ["4,812", "9,104", "14,208"] },
+      { label: "Unique B-parties", values: ["2,140", "6,882", "14,208"] },
+      { label: "Fanout ratio", values: ["12.6", "16.1", "18.4"] },
+      { label: "Burst score", values: ["0.88", "0.90", "0.91"] },
+      { label: "Night-activity ratio", values: ["0.41", "0.44", "0.47"] },
+      { label: "Active days", values: ["27", "54", "81"] },
+    ],
+  },
+  content: {
+    metrics: [
+      { label: "Dominant channel", value: "SMS" },
+      { label: "Classification", value: "SMS · Voice" },
+      {
+        label: "Scam ratio",
+        value: "82%",
+        tone: "risk",
+        alert: "82% of classified outbound messages match known scam or phishing templates.",
+      },
+      {
+        label: "Dominant scam category",
+        value: "KYC verify · 48%",
+        tone: "risk",
+        alert: "Nearly half of classified traffic is KYC-verify lure copy used in account-takeover campaigns.",
+      },
+      {
+        label: "Unique scam patterns",
+        value: "11",
+        tone: "risk",
+        alert: "11 distinct scam templates were observed, indicating a toolkit rather than a one-off message.",
+      },
+      { label: "CPA I label", value: "Account takeover" },
+      { label: "VC pattern hash", value: "vc_8f2k••••m4b" },
+      { label: "Voice / VoIP share", value: "14%" },
+    ],
+  },
+  network: {
+    signature: "hashed_sign · lac|imei|device_oem",
+    metrics: [
+      {
+        label: "Signature match",
+        value: "Cluster C-184",
+        tone: "risk",
+        hint: "Shared hashed_sign with other MSISDNs.",
+        alert: "This line shares a hashed device-location signature with cluster C-184, which includes known scammers.",
+      },
+      {
+        label: "Known scammer",
+        value: "Yes · 6 peers",
+        tone: "risk",
+        alert: "6 other MSISDNs on the same signature are already confirmed scammers.",
+      },
+      {
+        label: "Prospect scammer",
+        value: "3 linked",
+        tone: "moderate",
+        alert: "3 linked numbers show early scam-adjacent behavior but are not yet confirmed.",
+      },
+      {
+        label: "Prospect converted",
+        value: "2",
+        tone: "risk",
+        alert: "2 previously prospect-linked numbers on this signature later converted to confirmed scam senders.",
+      },
+      { label: "Cluster size", value: "18 MSISDNs" },
+      { label: "Shared LAC", value: "510-11-88421" },
+    ],
+  },
+};
+
+export const A_PARTY_PROFILE_NO_EVIDENCE: APartyProfile = {
+  risk: {
+    score: "—",
+    label: "UNSCORED",
+    tone: "neutral",
+    description: "Number is indexed but there is not enough classified traffic to compute a composite score.",
+    weights: [
+      { label: "Scam ratio", weight: "0.35", value: "—", strength: 0, threshold: "0.25", thresholdStrength: 0.25 },
+      { label: "Scam messages", weight: "0.20", value: "—", strength: 0, threshold: "1,200", thresholdStrength: 0.22 },
+      { label: "Unique recipients", weight: "0.15", value: "—", strength: 0, threshold: "850", thresholdStrength: 0.28 },
+      { label: "Burst score", weight: "0.10", value: "—", strength: 0, threshold: "0.35", thresholdStrength: 0.35 },
+      { label: "Fanout ratio", weight: "0.10", value: "—", strength: 0, threshold: "4.0", thresholdStrength: 0.3 },
+      { label: "Night activity", weight: "0.05", value: "—", strength: 0, threshold: "0.30", thresholdStrength: 0.3 },
+      { label: "Unique scam patterns", weight: "0.05", value: "—", strength: 0, threshold: "3", thresholdStrength: 0.24 },
+    ],
+  },
+  identity: {
+    verdict: { label: "Device identity", value: "Insufficient", tone: "neutral" },
+    metrics: [
+      { label: "Number type", value: "Personal" },
+      { label: "Home network", value: "Airtel" },
+      { label: "Original circle", value: "—" },
+      { label: "Original operator", value: "Airtel" },
+      { label: "Device TAC", value: "—" },
+      { label: "Device OEM", value: "—" },
+      { label: "IMSI prefix", value: "—" },
+      { label: "Fingerprint hops", value: "—" },
+    ],
+  },
+  vintage: {
+    metrics: [
+      { label: "Age on network", value: "—" },
+      { label: "First on network", value: "—" },
+      { label: "Last seen on network", value: "—" },
+      { label: "VLR first (signature)", value: "—" },
+      { label: "VLR latest (signature)", value: "—" },
+      { label: "Signature age", value: "—" },
+    ],
+  },
+  volatility: {
+    metrics: [
+      { label: "SIM / device churn", value: "—" },
+      { label: "IMEI changes", value: "—" },
+      { label: "OEM changes", value: "—" },
+      { label: "LAC changes", value: "—" },
+      { label: "Avg signature lifetime", value: "—" },
+      { label: "Current combo age", value: "—" },
+    ],
+  },
+  stability: {
+    metrics: [
+      { label: "Number recycled", value: "—" },
+      { label: "Last deactivation", value: "—" },
+      { label: "Reissue gap", value: "—" },
+      { label: "Reuse risk", value: "—" },
+    ],
+  },
+  activity: {
+    metrics: [
+      { label: "DND status", value: "—" },
+      { label: "Home carrier", value: "Airtel" },
+      { label: "Home circle", value: "—" },
+    ],
+    windows: [
+      { label: "Message volume", values: ["—", "—", "—"] },
+      { label: "Unique B-parties", values: ["—", "—", "—"] },
+      { label: "Fanout ratio", values: ["—", "—", "—"] },
+      { label: "Burst score", values: ["—", "—", "—"] },
+      { label: "Night-activity ratio", values: ["—", "—", "—"] },
+      { label: "Active days", values: ["—", "—", "—"] },
+    ],
+  },
+  content: {
+    metrics: [
+      { label: "Dominant channel", value: "—" },
+      { label: "Classification", value: "—" },
+      { label: "Scam ratio", value: "—" },
+      { label: "Dominant scam category", value: "—" },
+      { label: "Unique scam patterns", value: "—" },
+      { label: "CPA I label", value: "—" },
+      { label: "VC pattern hash", value: "—" },
+      { label: "Voice / VoIP share", value: "—" },
+    ],
+  },
+  network: {
+    signature: "hashed_sign · lac|imei|device_oem",
+    metrics: [
+      { label: "Signature match", value: "—" },
+      { label: "Known scammer", value: "—" },
+      { label: "Prospect scammer", value: "—" },
+      { label: "Prospect converted", value: "—" },
+      { label: "Cluster size", value: "—" },
+      { label: "Shared LAC", value: "—" },
+    ],
+  },
+};
+
 export const A_PARTY_EVIDENCES: EvidenceRow[] = [
   {
     id: "1",

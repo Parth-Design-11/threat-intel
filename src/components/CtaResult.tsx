@@ -1,4 +1,5 @@
 import { assets } from "../assets";
+import { useDevOverride } from "../devtools";
 import {
   CTA_DETAILS,
   CTA_MESSAGES,
@@ -24,7 +25,7 @@ function relatedIcon(kind: RelatedAsset["kind"]) {
 
 export function CtaResult({ query, onBack }: CtaResultProps) {
   const title = displayQuery(query);
-  const state = resolveCtaResultState(query);
+  const state = useDevOverride("explore.cta", resolveCtaResultState(query));
 
   if (state === "zero") {
     return (

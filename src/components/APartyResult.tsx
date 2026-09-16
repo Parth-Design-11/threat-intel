@@ -1,4 +1,5 @@
 import { assets } from "../assets";
+import { useDevOverride } from "../devtools";
 import {
   A_PARTY_DETAILS,
   A_PARTY_EVIDENCES,
@@ -18,7 +19,7 @@ type APartyResultProps = {
 
 export function APartyResult({ query, onBack }: APartyResultProps) {
   const masked = maskIdentifier(query);
-  const state = resolvePhoneResultState(query);
+  const state = useDevOverride("explore.aParty", resolvePhoneResultState(query));
 
   if (state === "zero") {
     return (
