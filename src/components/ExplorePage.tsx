@@ -138,7 +138,7 @@ export function ExplorePage() {
     "explore.aParty",
     type === "risk-score" && submitted ? resolvePhoneResultState(query) : null,
   );
-  const aPartyLayout = useDevOverride<"current" | "profile">("explore.aParty.layout", "current");
+  const aPartyLayout = useDevOverride<"current" | "profile">("explore.aParty.layout", "profile");
   const cta = useDevOverride(
     "explore.cta",
     type === "cta" && submitted ? resolveCtaResultState(query) : null,

@@ -88,7 +88,7 @@ export const prototypeConfig: PrototypeConfig = {
       label: "A-Party layout",
       screen: "explore",
       values: ["current", "profile"],
-      fallback: "current",
+      fallback: "profile",
     },
     {
       kind: "status",
