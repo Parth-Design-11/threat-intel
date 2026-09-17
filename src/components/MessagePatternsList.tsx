@@ -3,20 +3,30 @@ import { MESSAGE_PATTERNS } from "../exploreData";
 import { Pagination } from "./Pagination";
 
 type MessagePatternsListProps = {
+  query?: string;
   onSelect: (patternId: string) => void;
 };
 
 const PAGE_SIZE = 5;
 
-export function MessagePatternsList({ onSelect }: MessagePatternsListProps) {
+export function MessagePatternsList({ query = "", onSelect }: MessagePatternsListProps) {
   const [page, setPage] = useState(1);
+  const filtered = useMemo(() => {
+    const needle = query.trim().toLowerCase();
+    if (!needle) return MESSAGE_PATTERNS;
+    return MESSAGE_PATTERNS.filter((pattern) => pattern.excerpt.toLowerCase().includes(needle));
+  }, [query]);
 
-  const totalPages = Math.max(1, Math.ceil(MESSAGE_PATTERNS.length / PAGE_SIZE));
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
 
   const paginated = useMemo(() => {
     const start = (page - 1) * PAGE_SIZE;
-    return MESSAGE_PATTERNS.slice(start, start + PAGE_SIZE);
-  }, [page]);
+    return filtered.slice(start, start + PAGE_SIZE);
+  }, [filtered, page]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [query]);
 
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
@@ -34,6 +44,9 @@ export function MessagePatternsList({ onSelect }: MessagePatternsListProps) {
             <span className="th">Channels</span>
             <span className="th">Last Observed</span>
           </div>
+          {paginated.length === 0 ? (
+            <p className="message-patterns-empty">No patterns match that message.</p>
+          ) : null}
           {paginated.map((pattern) => (
             <button
               key={pattern.id}

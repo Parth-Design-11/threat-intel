@@ -1,6 +1,5 @@
 import logoWisely from "./assets/landing/logo-wisely.svg";
 import iconArrow from "./assets/landing/icon-arrow.svg";
-import iconArrowBlue from "./assets/landing/icon-arrow-blue.svg";
 import iconTrendUp from "./assets/landing/icon-trend-up.svg";
 import iconMask from "./assets/landing/icon-mask.svg";
 import iconPie from "./assets/landing/icon-pie.svg";
@@ -58,6 +57,7 @@ import gridHori from "./assets/landing/grid-hori.svg";
 import gridVerti from "./assets/landing/grid-verti.svg";
 import phoneA from "./assets/landing/phone-a.png";
 import phoneB from "./assets/landing/phone-b.png";
+import qrContribute from "./assets/landing/qr-contribute.png";
 import logoTonik from "./assets/landing/logo-tonik.png";
 import logoIoh from "./assets/landing/logo-ioh.svg";
 import iconFacebook from "./assets/landing/icon-facebook.svg";
@@ -67,7 +67,6 @@ import iconYoutube from "./assets/landing/icon-youtube.svg";
 export const landingAssets = {
   logoWisely,
   iconArrow,
-  iconArrowBlue,
   iconTrendUp,
   iconMask,
   iconPie,
@@ -125,6 +124,7 @@ export const landingAssets = {
   gridVerti,
   phoneA,
   phoneB,
+  qrContribute,
   logoTonik,
   logoIoh,
   iconFacebook,

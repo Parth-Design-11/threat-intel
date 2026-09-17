@@ -10,26 +10,24 @@ import { RiskSearchLoader } from "./RiskSearchLoader";
 import { MessagePatternDetail } from "./MessagePatternDetail";
 import { MessagePatternsList } from "./MessagePatternsList";
 
-export const EXPLORE_TYPES = ["risk-score", "cta", "message-patterns"] as const;
+export const EXPLORE_TYPES = ["risk-score", "message-patterns", "cta"] as const;
 export type ExploreType = (typeof EXPLORE_TYPES)[number];
 
 const SEARCH_TYPES = ["risk-score", "cta"] as const;
 type SearchExploreType = (typeof SEARCH_TYPES)[number];
 
-const TYPE_META: Record<
-  ExploreType,
-  { label: string; placeholder?: string }
-> = {
+const TYPE_META: Record<ExploreType, { label: string; placeholder: string }> = {
   "risk-score": {
-    label: "A-Party Risk Analysis",
-    placeholder: "Phone, email, or UPI (e.g. +919876543210)",
-  },
-  cta: {
-    label: "CTA Check",
-    placeholder: "Message text or URL (e.g. https://bit.ly/abc)",
+    label: "Number",
+    placeholder: "Enter phone number or sender ID",
   },
   "message-patterns": {
-    label: "Message Patterns",
+    label: "Message",
+    placeholder: "Enter message text",
+  },
+  cta: {
+    label: "Link",
+    placeholder: "Enter a URL or short link",
   },
 };
 
@@ -109,6 +107,7 @@ export function ExplorePage() {
   }, [historyOpen]);
 
   function runSearch(nextQuery: string) {
+    if (type === "message-patterns") return;
     if (!isSearchType(type)) return;
     const trimmed = nextQuery.trim();
     if (trimmed === "") {
@@ -187,14 +186,14 @@ export function ExplorePage() {
   return (
     <div className={`main-inner is-explore${isPatternsTab ? " is-explore-patterns" : ""}`}>
       <section className={`explore-landing${isPatternsTab ? " is-patterns" : ""}`}>
-        <h1 className="page-title">Explore Intelligence</h1>
-        <p className="explore-lede">
-          {isPatternsTab
-            ? "Browse known scam and phishing message patterns."
-            : "Look up a number, UPI, email, or message."}
-        </p>
+        <div className="explore-heading">
+          <h1 className="page-title">Explore Intelligence</h1>
+          <p className="explore-lede">
+            Check any number, message or link against Wisely AI threat intelligence.
+          </p>
+        </div>
 
-        <div className="explore-types" role="tablist" aria-label="Analysis type">
+        <div className="explore-types" role="tablist" aria-label="Check type">
           {EXPLORE_TYPES.map((item) => (
             <button
               key={item}
@@ -209,74 +208,67 @@ export function ExplorePage() {
           ))}
         </div>
 
-        {isPatternsTab ? (
-          <MessagePatternsList onSelect={setSelectedPatternId} />
-        ) : (
-          <>
-            <form className="explore-search" onSubmit={submit}>
-              <label className="explore-field">
-                <span className="explore-search-icon">
-                  <img src={assets.iconExplore} alt="" width={20} height={20} />
-                </span>
-                <input
-                  className="explore-input"
-                  value={query}
-                  onChange={(event) => {
-                    setQuery(event.target.value);
-                    if (error) setError("");
-                  }}
-                  placeholder={TYPE_META[type].placeholder}
-                  aria-label={TYPE_META[type].label}
-                  aria-invalid={Boolean(error)}
-                />
-                <div className="explore-history" ref={historyRef}>
-                  <button
-                    type="button"
-                    className="explore-history-btn"
-                    aria-label="Recent searches"
-                    aria-expanded={historyOpen}
-                    aria-haspopup="listbox"
-                    onClick={() => setHistoryOpen((open) => !open)}
-                  >
-                    <HistoryIcon />
-                  </button>
-                  {historyOpen ? (
-                    <div className="explore-history-menu" role="listbox" aria-label="Recent searches">
-                      {history.length === 0 ? (
-                        <p className="explore-history-empty">No recent searches</p>
-                      ) : (
-                        history.map((entry) => (
-                          <button
-                            key={`${entry.query}-${entry.searchedAt}`}
-                            type="button"
-                            role="option"
-                            className="explore-history-item"
-                            onClick={() => selectHistory(entry)}
-                          >
-                            <span className="explore-history-query" title={entry.query}>
-                              {entry.query}
-                            </span>
-                            <span className="explore-history-time">
-                              {formatHistoryTime(entry.searchedAt)}
-                            </span>
-                          </button>
-                        ))
-                      )}
-                    </div>
-                  ) : null}
-                </div>
-              </label>
-              <button type="submit" className="btn-primary explore-submit">
-                Search
+        <form className="explore-search" onSubmit={submit}>
+          <label className="explore-field">
+            <span className="explore-search-icon">
+              <img src={assets.iconExplore} alt="" width={20} height={20} />
+            </span>
+            <input
+              className="explore-input"
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                if (error) setError("");
+              }}
+              placeholder={TYPE_META[type].placeholder}
+              aria-label={TYPE_META[type].label}
+              aria-invalid={Boolean(error)}
+            />
+            <div className="explore-history" ref={historyRef}>
+              <button
+                type="button"
+                className="explore-history-btn"
+                aria-label="Recent searches"
+                aria-expanded={historyOpen}
+                aria-haspopup="listbox"
+                onClick={() => setHistoryOpen((open) => !open)}
+              >
+                <HistoryIcon />
               </button>
-            </form>
+              {historyOpen ? (
+                <div className="explore-history-menu" role="listbox" aria-label="Recent searches">
+                  {history.length === 0 ? (
+                    <p className="explore-history-empty">No recent searches</p>
+                  ) : (
+                    history.map((entry) => (
+                      <button
+                        key={`${entry.query}-${entry.searchedAt}`}
+                        type="button"
+                        role="option"
+                        className="explore-history-item"
+                        onClick={() => selectHistory(entry)}
+                      >
+                        <span className="explore-history-query" title={entry.query}>
+                          {entry.query}
+                        </span>
+                        <span className="explore-history-time">
+                          {formatHistoryTime(entry.searchedAt)}
+                        </span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </label>
+          <button type="submit" className="explore-submit">
+            Search
+          </button>
+        </form>
 
-            {error ? <p className="explore-error">{error}</p> : null}
-            {submitted && !error ? (
-              <p className="explore-hint">Results for this lookup will appear here.</p>
-            ) : null}
-          </>
-        )}
+        {error ? <p className="explore-error">{error}</p> : null}
+
+        {isPatternsTab ? <MessagePatternsList query={query} onSelect={setSelectedPatternId} /> : null}
       </section>
     </div>
   );

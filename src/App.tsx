@@ -14,7 +14,8 @@ import { InsightsPage } from "./components/InsightsPage";
 import { KeyCreatedModal } from "./components/KeyCreatedModal";
 import { PlaygroundPage } from "./components/PlaygroundPage";
 import { SettingsPage } from "./components/SettingsPage";
-import { Sidebar, type AppSection } from "./components/Sidebar";
+import { Sidebar, type AppSection, type DashboardView } from "./components/Sidebar";
+import { PublicDashboard } from "./components/PublicDashboard";
 import { TopBar } from "./components/TopBar";
 import { UsageLogsPage } from "./components/UsageLogsPage";
 import { INITIAL_KEYS, type ManagedApi } from "./data";
@@ -25,6 +26,7 @@ type Modal = "create" | "created" | "add-user" | "edit-user" | null;
 
 export default function App() {
   const [section, setSection] = useState<AppSection>("dashboard");
+  const [dashboardView, setDashboardView] = useState<DashboardView>("enterprise");
   const [tab, setTab] = useState<ApiTab>("keys");
   const [modal, setModal] = useState<Modal>(null);
   const [keys, setKeys] = useState<ManagedApi[]>(INITIAL_KEYS);
@@ -34,14 +36,24 @@ export default function App() {
   const [users, setUsers] = useState<ManagedUser[]>(INITIAL_USERS);
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
   const [createdApi, setCreatedApi] = useState<ManagedApi | null>(null);
+  const isPublicDashboard = viewSection === "dashboard" && dashboardView === "public";
 
   return (
     <div className="shell">
-      <TopBar />
-      <div className="body">
-        <Sidebar active={viewSection} onSelect={setSection} />
+      <TopBar
+        dashboardView={dashboardView}
+        onDashboardView={(view) => {
+          setDashboardView(view);
+          setSection("dashboard");
+        }}
+      />
+      <div className={`body${isPublicDashboard ? " is-public" : ""}`}>
+        {isPublicDashboard ? null : <Sidebar active={viewSection} onSelect={setSection} />}
         <main className="main">
-          {viewSection === "dashboard" ? <InsightsPage /> : null}
+          {viewSection === "dashboard" && dashboardView === "enterprise" ? <InsightsPage /> : null}
+          {viewSection === "dashboard" && dashboardView === "public" ? (
+            <PublicDashboard onGetApi={() => setSection("api")} />
+          ) : null}
           {viewSection === "explore" ? <ExplorePage /> : null}
           {viewSection === "settings" ? (
             <SettingsPage

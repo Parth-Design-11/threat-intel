@@ -143,10 +143,6 @@ export function LandingPage() {
               Register
               <img src={a.iconArrow} alt="" width={20} height={20} />
             </a>
-            <a className="lp-link-hero" href="#contribute">
-              Contribute to Intelligence
-              <img src={a.iconArrowBlue} alt="" width={20} height={20} />
-            </a>
           </div>
           <div className="lp-hero-stats">
             <div className="lp-stat">
@@ -419,8 +415,26 @@ export function LandingPage() {
             <img src={a.gridVerti} alt="" width={1533} height={1167} style={{ left: 47, top: 183 }} />
           </div>
           <div className="lp-contribute-copy">
-            <h2>Contribute to our intelligence and earn rewards</h2>
-            <p>Through our WhatsApp-based chatbot, 100 million citizens can report suspicious activity directly</p>
+            <div className="lp-contribute-text">
+              <h2>Contribute to our intelligence and earn rewards</h2>
+              <p>
+                Through our WhatsApp-based chatbot, 100 million Indonesians can report suspicious activity
+                directly
+              </p>
+            </div>
+            <div className="lp-contribute-scan">
+              <div className="lp-qr">
+                <div className="lp-qr-clip">
+                  <img
+                    src={a.qrContribute}
+                    alt="WhatsApp QR code to contribute threat reports"
+                    width={345}
+                    height={230}
+                  />
+                </div>
+              </div>
+              <p>SCAN TO CONTRIBUTE</p>
+            </div>
           </div>
           <div className="lp-phones">
             <div className="lp-phone is-back">

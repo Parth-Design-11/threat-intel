@@ -6,15 +6,13 @@ export const INSIGHTS_SUMMARY = {
   tenant: "ICICI Bank",
   subtitle: "SMS phishing protection overview",
   usersProtected: "6.2M",
-  usersProtectedDelta: "↑ 45% vs Jun",
+  usersProtectedDelta: "45% vs Jun",
   smishingAttacks: "18.8M",
   channelDelta: "A2P +77% · P2P +133%",
   impersonationsBlocked: "0",
-  impersonationsDelta: "↓ MoM flat",
+  impersonationsDelta: "MoM flat",
   customerComplaints: "0",
-  complaintsDelta: "↓ from 192 in Apr",
-  takeaway:
-    "12.8M unique users protected Apr–Jul · 0 impersonating URLs or sender IDs eliminated · ~3 smishing attempts per protected user in July",
+  complaintsDelta: "from 192 in Apr",
 };
 
 export const TREND_MONTHS = [
@@ -81,6 +79,14 @@ export const TOP_CIRCLES: CircleTarget[] = [
   { circle: "Madhya Pradesh", stateId: "INMP", share: "8%", shareNum: 8, mom: "+1pp" },
 ];
 
+export const SCAMMER_CIRCLES: CircleTarget[] = [
+  { circle: "Maharashtra", stateId: "INMH", share: "18%", shareNum: 18, mom: "+3pp" },
+  { circle: "Delhi", stateId: "INDL", share: "14%", shareNum: 14, mom: "+2pp" },
+  { circle: "Telangana", stateId: "INTG", share: "12%", shareNum: 12, mom: "+1pp" },
+  { circle: "Karnataka", stateId: "INKA", share: "9%", shareNum: 9, mom: "—" },
+  { circle: "West Bengal", stateId: "INWB", share: "8%", shareNum: 8, mom: "+1pp" },
+];
+
 export const USE_CASES = [
   { label: "Gambling", detail: "92% A2P · 93% P2P", width: 93 },
   { label: "Investment / business", detail: "1% A2P · 4% P2P", width: 18, muted: true },
@@ -123,3 +129,57 @@ export const CTA_CHIPS = [
 ];
 
 export const CTA_SPARKLINE = [28, 32, 36, 40, 44, 48, 52, 58, 64, 72, 80, 88];
+
+export type InsightCopyPart = {
+  text: string;
+  weight?: "regular" | "semibold";
+};
+
+export const AI_INSIGHTS = {
+  title: "Top Insights",
+  lead: "Threat activity on the network has reduced by 12% in the current week",
+  cards: [
+    {
+      title: "Peak Scam Hour",
+      parts: [
+        { text: "In the last 7 days, the highest volume of scam messages was sent at " },
+        { text: "19:00 (7 PM), ", weight: "semibold" },
+        { text: "totalling" },
+        { text: " 5,084,167", weight: "semibold" },
+        { text: " messages." },
+      ],
+    },
+    {
+      title: "Top Scam Province",
+      parts: [
+        { text: "In the last 7 days, scammers were most active in JAWA TENGAH, with " },
+        { text: "8,382,403", weight: "semibold" },
+        { text: " recorded scam activities." },
+      ],
+    },
+    {
+      title: "Net New Scammers",
+      parts: [
+        { text: "49,974", weight: "semibold" },
+        { text: " net new scammers were identified in the last 7 days." },
+      ],
+    },
+    {
+      title: "Top Active Scammer Operator",
+      parts: [
+        { text: "Telkomsel", weight: "semibold" },
+        { text: " has the highest number of active scammer users in the last 7 days, with " },
+        { text: "1,279,988", weight: "semibold" },
+        { text: " active scammers." },
+      ],
+    },
+    {
+      title: "Top Scam SMS OEM",
+      parts: [
+        { text: "Quectel devices ", weight: "semibold" },
+        { text: "sent the most scam SMS in the last 7 days, totaling" },
+        { text: " 7,610,240 messages.", weight: "semibold" },
+      ],
+    },
+  ],
+} as const;

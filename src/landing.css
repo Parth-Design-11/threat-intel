@@ -152,25 +152,6 @@ body:has(.lp) {
   filter: brightness(1.05);
 }
 
-.lp a.lp-link-hero {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: #51a2ff;
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: -0.44px;
-}
-
-.lp-link-hero img {
-  width: 20px;
-  height: 20px;
-}
-
-.lp a.lp-link-hero:hover {
-  color: #7ec0ff;
-}
-
 /* ---------- Hero ---------- */
 
 .lp-hero {
@@ -1796,7 +1777,14 @@ body:has(.lp) {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
+  align-self: stretch;
+  min-width: 0;
+}
+
+.lp-contribute-text {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
 }
 
@@ -1816,6 +1804,46 @@ body:has(.lp) {
   font-size: 16px;
   line-height: 24px;
   letter-spacing: -0.32px;
+}
+
+.lp-contribute-scan {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lp-contribute-scan p {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.lp-qr {
+  box-sizing: border-box;
+  flex: 0 0 130px;
+  width: 130px;
+  height: 130px;
+  padding: 13px;
+  overflow: hidden;
+  border: 1.3px solid var(--lp-card-stroke);
+  border-radius: 20.8px;
+  background: #fff;
+  box-shadow: 0 1.3px 2.6px rgba(228, 229, 231, 0.24);
+}
+
+.lp-qr-clip {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  overflow: hidden;
+}
+
+.lp-qr-clip img {
+  position: absolute;
+  left: -120.25px;
+  top: -93.6px;
+  width: 345.15px;
+  height: 230.1px;
+  object-fit: cover;
 }
 
 .lp-phones {
