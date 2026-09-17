@@ -1,5 +1,15 @@
+import type { MouseEvent } from "react";
 import { landingAssets as a } from "../landingAssets";
+import { navigateTo } from "../navigate";
 import { LandingProof } from "./LandingProof";
+
+function openDashboard(event: MouseEvent<HTMLAnchorElement>) {
+  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
+    return;
+  }
+  event.preventDefault();
+  navigateTo("/");
+}
 
 const STARS = [
   [1297.81, 751.93, 0.38],
@@ -105,7 +115,7 @@ export function LandingPage() {
             <a className="lp-nav-link" href="#api">
               API Docs
             </a>
-            <a className="lp-nav-link" href="/">
+            <a className="lp-nav-link" href="/" onClick={openDashboard}>
               Sign In
             </a>
           </nav>

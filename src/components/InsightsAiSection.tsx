@@ -27,7 +27,11 @@ export function InsightsAiSection({ className }: InsightsAiSectionProps) {
             <h3>{card.title}</h3>
             <p>
               {card.parts.map((part, index) =>
-                part.weight === "semibold" ? <strong key={index}>{part.text}</strong> : <span key={index}>{part.text}</span>,
+                part.weight === "semibold" ? (
+                  <strong key={index}>{part.text}</strong>
+                ) : (
+                  <span key={index}>{part.text}</span>
+                ),
               )}
             </p>
           </article>

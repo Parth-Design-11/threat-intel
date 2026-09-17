@@ -182,4 +182,8 @@ export const AI_INSIGHTS = {
       ],
     },
   ],
-} as const;
+} satisfies {
+  title: string;
+  lead: string;
+  cards: { title: string; parts: InsightCopyPart[] }[];
+};

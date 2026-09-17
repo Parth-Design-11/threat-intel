@@ -1,27 +1,42 @@
-import { StrictMode } from "react";
+import { StrictMode, useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import { LandingPage } from "./components/LandingPage";
 import { DevToolsPanel, DevToolsProvider } from "./devtools";
+import { isLandingPath } from "./navigate";
 import "./index.css";
 import "./landing.css";
 
-function isLandingRoute() {
-  const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  return path === "/landing-page" || path.endsWith("/landing-page");
-}
+function Root() {
+  const [landing, setLanding] = useState(isLandingPath);
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    {isLandingRoute() ? (
-      <LandingPage />
-    ) : import.meta.env.DEV ? (
+  useEffect(() => {
+    function syncRoute() {
+      setLanding(isLandingPath());
+    }
+
+    window.addEventListener("popstate", syncRoute);
+    return () => window.removeEventListener("popstate", syncRoute);
+  }, []);
+
+  if (landing) {
+    return <LandingPage />;
+  }
+
+  if (import.meta.env.DEV) {
+    return (
       <DevToolsProvider>
         <App />
         <DevToolsPanel />
       </DevToolsProvider>
-    ) : (
-      <App />
-    )}
+    );
+  }
+
+  return <App />;
+}
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <Root />
   </StrictMode>,
 );
