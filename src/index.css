@@ -132,41 +132,6 @@ img {
   gap: 12px;
 }
 
-.topbar-switcher {
-  position: relative;
-  display: block;
-}
-
-.topbar-switcher select {
-  display: block;
-  height: 36px;
-  min-width: 140px;
-  padding: 0 32px 0 14px;
-  border: 1px solid rgba(235, 239, 240, 0.14);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 500;
-  appearance: none;
-}
-
-.topbar-switcher select option {
-  color: #101828;
-}
-
-.topbar-switcher img {
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  width: 10px;
-  height: 6px;
-  transform: translateY(-50%);
-  pointer-events: none;
-  filter: brightness(0) invert(1);
-}
-
 .topbar-wise-albert {
   display: inline-flex;
   align-items: center;
@@ -4278,7 +4243,8 @@ img {
   background: #e7ebec;
 }
 
-.public-get-api {
+.public-get-api,
+.lp button.public-get-api {
   height: 40px;
   padding: 4px 18px;
   border: 1px solid rgba(235, 239, 240, 0.1);

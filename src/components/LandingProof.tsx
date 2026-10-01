@@ -58,10 +58,10 @@ function SceneSna() {
   return (
     <div className="lp-proof-scene is-sna" aria-hidden="true">
       <div className="lp-proof-sna-node is-msisdn">+91 98765 43210</div>
-      <svg className="lp-proof-sna-arc" viewBox="0 0 160 48" fill="none">
-        <path d="M8 40 C 40 4, 120 4, 152 40" />
-        <circle className="lp-proof-sna-pulse" cx="8" cy="40" r="4" />
-        <circle className="lp-proof-sna-pulse is-b" cx="152" cy="40" r="4" />
+      <svg className="lp-proof-sna-arc" viewBox="0 0 220 28" fill="none">
+        <path d="M8 24 C 60 2, 160 2, 212 24" />
+        <circle className="lp-proof-sna-pulse" cx="8" cy="24" r="4" />
+        <circle className="lp-proof-sna-pulse is-b" cx="212" cy="24" r="4" />
       </svg>
       <div className="lp-proof-sna-node is-net">NETWORK AUTH</div>
       <span className="lp-proof-seal">MATCH · TRUE</span>

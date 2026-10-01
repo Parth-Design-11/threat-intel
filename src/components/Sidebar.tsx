@@ -2,7 +2,6 @@ import { useState } from "react";
 import { assets } from "../assets";
 
 export type AppSection = "dashboard" | "explore" | "api" | "settings";
-export type DashboardView = "enterprise" | "public";
 
 const ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: assets.iconHome },

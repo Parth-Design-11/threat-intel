@@ -1,15 +1,8 @@
-import type { MouseEvent } from "react";
+import { useState } from "react";
 import { landingAssets as a } from "../landingAssets";
-import { navigateTo } from "../navigate";
+import { AnimatedUsecaseIcon, type UsecaseKind } from "./AnimatedUsecaseIcon";
+import { LandingFooter, LandingNav, openRegister } from "./LandingChrome";
 import { LandingProof } from "./LandingProof";
-
-function openDashboard(event: MouseEvent<HTMLAnchorElement>) {
-  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
-    return;
-  }
-  event.preventDefault();
-  navigateTo("/");
-}
 
 const STARS = [
   [1297.81, 751.93, 0.38],
@@ -65,65 +58,94 @@ const PARTNERS = [
     copy: "Stop bad actors at the point of onboarding by cross-referencing global and local threat signatures.",
     icon: a.iconEnterprise,
     boxed: true,
-    usecaseLabel: "Usecases",
-    chips: ["Identity Verification", "Account Takeover Prevention", "Promo Abuse Prevention"],
+    chips: [
+      {
+        label: "Identity Verification",
+        kind: "fingerprint" as UsecaseKind,
+        subtext: "Verify new users against live global scam signatures at onboarding.",
+      },
+      {
+        label: "Account Takeover Prevention",
+        kind: "lock-shield" as UsecaseKind,
+        subtext: "Flag high-risk logins before stolen credentials can be reused.",
+      },
+      {
+        label: "Promo Abuse Prevention",
+        kind: "coupon-block" as UsecaseKind,
+        subtext: "Stop coupon, referral, and bonus farming by clustered fake accounts.",
+      },
+    ],
   },
   {
     name: "Regulators",
     copy: "Identify and deactivate malicious phone numbers and fraudulent credentials instantly.",
     icon: a.iconRegulators,
     boxed: false,
-    usecaseLabel: "Usecase",
-    chips: ["National Blacklist Management", "Threat Removal"],
+    chips: [
+      {
+        label: "National Blacklist Management",
+        kind: "list-flag" as UsecaseKind,
+        subtext: "Maintain a live registry of malicious numbers, URLs, and IDs across networks.",
+      },
+      {
+        label: "Threat Removal",
+        kind: "globe-x" as UsecaseKind,
+        subtext: "Coordinate rapid takedowns of active scam infrastructure with providers.",
+      },
+    ],
   },
   {
     name: "Law Enforcement Agencies",
     copy: "Access to the deep forensic insights and data-backed evidence required to bring fraudsters to justice.",
     icon: a.iconPoliceLg,
     boxed: true,
-    usecaseLabel: "Usecase",
-    chips: ["Law Enforcement", "Syndicate mapping", "Digital Forensic Evidence"],
+    chips: [
+      {
+        label: "Law Enforcement",
+        kind: "badge-star" as UsecaseKind,
+        subtext: "Act on verified fraud intelligence to disrupt live scam operations.",
+      },
+      {
+        label: "Syndicate mapping",
+        kind: "network" as UsecaseKind,
+        subtext: "Reveal the cross-network relationships behind organised scam rings.",
+      },
+      {
+        label: "Digital Forensic Evidence",
+        kind: "magnifier" as UsecaseKind,
+        subtext: "Export court-ready evidence packs backed by verified digital signals.",
+      },
+    ],
   },
   {
     name: "Telecoms",
     copy: "Detect and block high-risk transactions before they occur in real-time.",
     icon: a.iconTower,
     boxed: true,
-    usecaseLabel: "Usecase",
-    chips: ["Scam URL, Caller ID Sync", "Enhanced scam signal", "Device check"],
+    chips: [
+      {
+        label: "Scam URL, Caller ID Sync",
+        kind: "sync" as UsecaseKind,
+        subtext: "Sync scam URLs and Caller ID signals across your network in real time.",
+      },
+      {
+        label: "Enhanced scam signal",
+        kind: "signal" as UsecaseKind,
+        subtext: "Enrich voice and SMS traffic with WiselyAi's live threat intelligence.",
+      },
+      {
+        label: "Device check",
+        kind: "device-check" as UsecaseKind,
+        subtext: "Verify device authenticity to stop SIM-swap and cloned-handset fraud.",
+      },
+    ],
   },
 ] as const;
 
 export function LandingPage() {
   return (
     <div className="lp">
-      <header className="lp-nav">
-        <a className="lp-brand" href="/landing-page">
-          <div className="lp-brand-logo">
-            <img src={a.logoWisely} alt="Wisely AI" width={79.387} height={24.34} />
-          </div>
-          <p className="lp-brand-sub">Threat Intelligence</p>
-        </a>
-        <div className="lp-nav-actions">
-          <nav className="lp-nav-links" aria-label="Landing">
-            <a className="lp-nav-link" href="#faqs">
-              FAQs
-            </a>
-            <a className="lp-nav-link" href="#blog">
-              Blog
-            </a>
-            <a className="lp-nav-link" href="#api">
-              API Docs
-            </a>
-            <a className="lp-nav-link" href="/" onClick={openDashboard}>
-              Sign In
-            </a>
-          </nav>
-          <a className="lp-btn-register" href="/">
-            Register
-          </a>
-        </div>
-      </header>
+      <LandingNav />
 
       <section className="lp-hero">
         <div className="lp-hero-glow is-blue" />
@@ -149,7 +171,7 @@ export function LandingPage() {
             Powered by an intelligence repository of <strong>1.3 million threats</strong> and growing
           </p>
           <div className="lp-hero-cta">
-            <a className="lp-btn-hero" href="/">
+            <a className="lp-btn-hero" href="/register" onClick={openRegister}>
               Register
               <img src={a.iconArrow} alt="" width={20} height={20} />
             </a>
@@ -383,37 +405,8 @@ export function LandingPage() {
             seamlessly into existing security systems for a unified national defense
           </p>
         </div>
-        <div className="lp-partner-grid">
-          {PARTNERS.map((card) => (
-            <article key={card.name} className="lp-partner">
-              <div className="lp-partner-top">
-                <div className={`lp-partner-icon${card.boxed ? "" : " is-plain"}`}>
-                  <img src={card.icon} alt="" width={card.boxed ? 40 : 50} height={card.boxed ? 40 : 50} />
-                </div>
-                <div>
-                  <h3 className="lp-partner-name">{card.name}</h3>
-                  <p className="lp-partner-copy">{card.copy}</p>
-                </div>
-              </div>
-              <div className="lp-partner-rule" />
-              <div>
-                <p className="lp-usecases-label">{card.usecaseLabel}</p>
-                <div className="lp-chips">
-                  {card.chips.map((chip) => (
-                    <span key={chip} className="lp-chip">
-                      <img src={a.iconTick} alt="" width={16} height={16} />
-                      {chip}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <a className="lp-api-link" href="#api">
-                Read API Document
-              </a>
-            </article>
-          ))}
-        </div>
-        <a className="lp-btn-register is-lg" href="/">
+        <PartnersTabs />
+        <a className="lp-btn-register is-lg" href="/register" onClick={openRegister}>
           Register
         </a>
       </section>
@@ -457,60 +450,44 @@ export function LandingPage() {
         </div>
       </section>
 
-      <footer className="lp-footer" id="faqs">
-        <div className="lp-footer-row">
-          <div className="lp-footer-col">
-            <div className="lp-powered">
-              <p className="lp-footer-kicker">Powered by</p>
-              <img src={a.logoTonik} alt="Tanla ValueFirst" width={89} height={24} />
+      <LandingFooter />
+    </div>
+  );
+}
+
+function PartnersTabs() {
+  const [active, setActive] = useState(0);
+  const tab = PARTNERS[active];
+  return (
+    <div className="lp-partner-tabs-wrap">
+      <div className="lp-partner-tabs" role="tablist">
+        {PARTNERS.map((p, i) => (
+          <button
+            key={p.name}
+            type="button"
+            role="tab"
+            aria-selected={i === active}
+            className={`lp-partner-tab${i === active ? " is-active" : ""}`}
+            onClick={() => setActive(i)}
+          >
+            <img src={p.icon} alt="" width={20} height={20} />
+            <span>{p.name}</span>
+          </button>
+        ))}
+      </div>
+      <article className="lp-partner-panel">
+        <div className="lp-usecase-cards">
+          {tab.chips.map((chip) => (
+            <div key={chip.label} className="lp-usecase-card">
+              <div className="lp-usecase-card-icon">
+                <AnimatedUsecaseIcon kind={chip.kind} />
+              </div>
+              <h4 className="lp-usecase-card-title">{chip.label}</h4>
+              <p className="lp-usecase-card-copy">{chip.subtext}</p>
             </div>
-            <div className="lp-partnered">
-              <p className="lp-footer-kicker">In Partnership with</p>
-              <img src={a.logoIoh} alt="IOH Business" width={82} height={24} />
-            </div>
-          </div>
-          <div className="lp-footer-col">
-            <p className="lp-footer-kicker">Company</p>
-            <a className="lp-footer-link" href="#products">
-              Products
-            </a>
-            <a className="lp-footer-link" href="#faqs">
-              FAQs
-            </a>
-            <a className="lp-footer-link" href="#blog">
-              Blog
-            </a>
-            <a className="lp-footer-link" href="#api">
-              API Docs
-            </a>
-          </div>
-          <div className="lp-footer-col">
-            <p className="lp-footer-kicker">Legal</p>
-            <a className="lp-footer-link" href="#terms">
-              Terms of Service
-            </a>
-            <a className="lp-footer-link" href="#privacy">
-              Privacy Policy
-            </a>
-          </div>
-          <div className="lp-footer-col">
-            <p className="lp-footer-kicker">Social</p>
-            <div className="lp-socials">
-              <a href="https://www.facebook.com" aria-label="Facebook">
-                <img src={a.iconFacebook} alt="" width={24} height={24} />
-              </a>
-              <a href="https://www.linkedin.com" aria-label="LinkedIn">
-                <img src={a.iconLinkedin} alt="" width={24} height={24} />
-              </a>
-              <a href="https://www.youtube.com" aria-label="YouTube">
-                <img src={a.iconYoutube} alt="" width={24} height={24} />
-              </a>
-            </div>
-          </div>
+          ))}
         </div>
-        <div className="lp-footer-rule" />
-        <p className="lp-footer-copy">© 2026 Wisely.Ai Threat Intelligence</p>
-      </footer>
+      </article>
     </div>
   );
 }
