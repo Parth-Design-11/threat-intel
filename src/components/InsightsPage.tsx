@@ -37,7 +37,7 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
   const [range, setRange] = useState<DateRange>({ start: "2026-07-01", end: "2026-07-31" });
   const [tab, setTab] = useState<InsightsTab>("landscape");
   const period = formatDateRange(range);
-  const dataVolume = useDevOverride("insights.data", "typical");
+  const dataVolume = useDevOverride<"none" | "typical">("insights.data", "typical");
   const isEmpty = dataVolume === "none";
 
   return (
