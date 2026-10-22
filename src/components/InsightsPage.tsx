@@ -11,6 +11,8 @@ import {
 } from "../insightsData";
 import iconTickerDown from "../assets/public/icon-arrow-up.svg";
 import iconTickerUp from "../assets/insights/icon-ticker-up.svg";
+import { useDevOverride } from "../devtools";
+import { DashboardZeroState } from "./DashboardZeroState";
 import { IndiaCirclesMap } from "./IndiaCirclesMap";
 import { InsightsAiSection } from "./InsightsAiSection";
 import { InsightsAiWidget } from "./InsightsAiWidget";
@@ -18,6 +20,7 @@ import { formatDateRange, InsightsDateRange, type DateRange } from "./InsightsDa
 
 type InsightsPageProps = {
   onAnalyze?: (excerpt: string) => void;
+  onExplore?: () => void;
 };
 
 const LANDSCAPE_WIDGET_IDS = ["landscape-users", "landscape-modus", "landscape-scammer"] as const;
@@ -30,13 +33,15 @@ const INSIGHTS_TABS = [
 
 type InsightsTab = (typeof INSIGHTS_TABS)[number]["id"];
 
-export function InsightsPage({ onAnalyze }: InsightsPageProps) {
+export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
   const [range, setRange] = useState<DateRange>({ start: "2026-07-01", end: "2026-07-31" });
   const [tab, setTab] = useState<InsightsTab>("landscape");
   const period = formatDateRange(range);
+  const dataVolume = useDevOverride("insights.data", "typical");
+  const isEmpty = dataVolume === "none";
 
   return (
-    <div className="main-inner is-insights">
+    <div className={`main-inner is-insights${isEmpty ? " is-insights-empty" : ""}`}>
       <div className="page-header">
         <div>
           <h1 className="page-title">Dashboard</h1>
@@ -52,6 +57,10 @@ export function InsightsPage({ onAnalyze }: InsightsPageProps) {
         </div>
       </div>
 
+      {isEmpty ? (
+        <DashboardZeroState onExplore={() => onExplore?.()} />
+      ) : (
+        <>
       <section className="metrics insights-metrics" aria-label="Executive summary">
         <InsightsAiWidget widgetId="users-protected" period={period} className="metric-card">
           <p className="metric-label">Users Protected</p>
@@ -305,6 +314,8 @@ export function InsightsPage({ onAnalyze }: InsightsPageProps) {
         </div>
         <InsightsAiSection className="is-rail" />
       </div>
+        </>
+      )}
     </div>
   );
 }

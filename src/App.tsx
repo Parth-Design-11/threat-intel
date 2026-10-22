@@ -41,7 +41,9 @@ export default function App() {
       <div className="body">
         <Sidebar active={viewSection} onSelect={setSection} />
         <main className="main">
-          {viewSection === "dashboard" ? <InsightsPage /> : null}
+          {viewSection === "dashboard" ? (
+            <InsightsPage onExplore={() => setSection("explore")} />
+          ) : null}
           {viewSection === "explore" ? <ExplorePage /> : null}
           {viewSection === "settings" ? (
             <SettingsPage

@@ -112,6 +112,14 @@ export const prototypeConfig: PrototypeConfig = {
       values: ["none", "typical"],
       fallback: "typical",
     },
+    {
+      kind: "dataset",
+      id: "insights.data",
+      label: "Dashboard data",
+      screen: "dashboard",
+      values: ["none", "typical"],
+      fallback: "typical",
+    },
   ],
   scenarios: [
     {
@@ -143,6 +151,11 @@ export const prototypeConfig: PrototypeConfig = {
       id: "api-empty",
       label: "Empty API catalog",
       set: { "app.section": "api", "api.tab": "keys", "api.keys": "none" },
+    },
+    {
+      id: "dashboard-empty",
+      label: "Dashboard: no activity",
+      set: { "app.section": "dashboard", "insights.data": "none" },
     },
   ],
 } as const;

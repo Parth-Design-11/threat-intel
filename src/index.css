@@ -3684,6 +3684,58 @@ img {
   gap: 16px;
 }
 
+.main-inner.is-insights.is-insights-empty {
+  flex: 1;
+  min-height: 0;
+}
+
+.dashboard-zero-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 64px 32px;
+  margin-top: 8px;
+}
+
+.dashboard-zero-state-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1px solid var(--stroke);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.dashboard-zero-state-icon img {
+  opacity: 0.55;
+}
+
+.dashboard-zero-state-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 28px;
+  color: var(--text-title);
+}
+
+.dashboard-zero-state-desc {
+  margin: 8px 0 0;
+  max-width: 420px;
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--text-sub);
+}
+
+.dashboard-zero-state-cta {
+  margin-top: 20px;
+}
+
 .insights-subtitle {
   margin: 4px 0 0;
   font-size: 14px;
