@@ -9,7 +9,8 @@ import {
   type ProfileMetric,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
-import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
+import type { PartyMode } from "./PartyModeToggle";
+import { ResultPartyHeader } from "./ResultPartyHeader";
 import { RiskSpiderChart } from "./RiskSpiderChart";
 
 type APartyProfileResultProps = {
@@ -109,21 +110,20 @@ export function APartyProfileResult({
   if (state === "zero") {
     return (
       <div className="main-inner is-result">
-        <header className="result-header has-party-mode">
-          <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
-            <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
-          </button>
-          <div className="result-heading">
-            <h1 className="result-title">{masked}</h1>
-            <p className="result-meta">
+        <ResultPartyHeader
+          title={masked}
+          onBack={onBack}
+          partyMode={partyMode}
+          onPartyModeChange={onPartyModeChange}
+          meta={
+            <>
               <span className="result-meta-icon">
                 <img src={assets.iconUser} alt="" width={16} height={16} />
               </span>
               Sender
-            </p>
-          </div>
-          <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
-        </header>
+            </>
+          }
+        />
         <ExploreZeroState
           title="No intelligence found"
           description="This phone number hasn't been observed in scam, phishing, or fraud campaigns across our threat network."
@@ -137,13 +137,13 @@ export function APartyProfileResult({
 
   return (
     <div className="main-inner is-result is-profile">
-      <header className="result-header has-party-mode">
-        <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
-          <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
-        </button>
-        <div className="result-heading">
-          <h1 className="result-title">{masked}</h1>
-          <p className="result-meta">
+      <ResultPartyHeader
+        title={masked}
+        onBack={onBack}
+        partyMode={partyMode}
+        onPartyModeChange={onPartyModeChange}
+        meta={
+          <>
             <span className="result-meta-icon">
               <img src={assets.iconUser} alt="" width={16} height={16} />
             </span>
@@ -151,10 +151,9 @@ export function APartyProfileResult({
             {state === "no-evidence" ? (
               <span className="result-status-badge is-no-evidence">No evidence</span>
             ) : null}
-          </p>
-        </div>
-        <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
-      </header>
+          </>
+        }
+      />
 
       <div className="profile-layout">
         <div className="profile-stack">

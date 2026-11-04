@@ -13,27 +13,58 @@ import { ExplorePage } from "./components/ExplorePage";
 import { InsightsPage } from "./components/InsightsPage";
 import { KeyCreatedModal } from "./components/KeyCreatedModal";
 import { PlaygroundPage } from "./components/PlaygroundPage";
+import { ReportsPage } from "./components/ReportsPage";
 import { SettingsPage } from "./components/SettingsPage";
 import { Sidebar, type AppSection } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { UsageLogsPage } from "./components/UsageLogsPage";
 import { INITIAL_KEYS, type ManagedApi } from "./data";
 import { useDevOverride } from "./devtools";
+import { REPORT_EXPORTS, type ReportExport } from "./insightsData";
 import { INITIAL_USERS, type ManagedUser } from "./usersData";
 
 type Modal = "create" | "created" | "add-user" | "edit-user" | null;
+
+function formatExportStamp(date = new Date()) {
+  return new Intl.DateTimeFormat(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
 
 export default function App() {
   const [section, setSection] = useState<AppSection>("dashboard");
   const [tab, setTab] = useState<ApiTab>("keys");
   const [modal, setModal] = useState<Modal>(null);
   const [keys, setKeys] = useState<ManagedApi[]>(INITIAL_KEYS);
+  const [reportExports, setReportExports] = useState<ReportExport[]>(() => [...REPORT_EXPORTS]);
   const viewSection = useDevOverride("app.section", section);
   const viewTab = useDevOverride("api.tab", tab);
   const keyVolume = useDevOverride("api.keys", keys.length === 0 ? "none" : "typical");
   const [users, setUsers] = useState<ManagedUser[]>(INITIAL_USERS);
   const [editingUser, setEditingUser] = useState<ManagedUser | null>(null);
   const [createdApi, setCreatedApi] = useState<ManagedApi | null>(null);
+
+  function requestCdrExport(periodLabel: string) {
+    const id = `cdr-${Date.now()}`;
+    const pending: ReportExport = {
+      id,
+      name: `CDR · ${periodLabel}`,
+      type: "CDR",
+      status: "preparing",
+      createdAt: formatExportStamp(),
+      createdBy: "You",
+    };
+    setReportExports((rows) => [pending, ...rows]);
+    window.setTimeout(() => {
+      setReportExports((rows) =>
+        rows.map((row) => (row.id === id ? { ...row, status: "ready" as const } : row)),
+      );
+    }, 3500);
+  }
 
   return (
     <div className="shell">
@@ -42,9 +73,14 @@ export default function App() {
         <Sidebar active={viewSection} onSelect={setSection} />
         <main className="main">
           {viewSection === "dashboard" ? (
-            <InsightsPage onExplore={() => setSection("explore")} />
+            <InsightsPage
+              onExplore={() => setSection("explore")}
+              onOpenReports={() => setSection("reports")}
+              onRequestCdrExport={requestCdrExport}
+            />
           ) : null}
           {viewSection === "explore" ? <ExplorePage /> : null}
+          {viewSection === "reports" ? <ReportsPage exports={reportExports} /> : null}
           {viewSection === "settings" ? (
             <SettingsPage
               users={users}

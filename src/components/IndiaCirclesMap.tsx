@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { SCAMMER_CIRCLES, TOP_CIRCLES, type CircleTarget } from "../insightsData";
+import { InsightsWidgetInfo } from "./InsightsWidgetTitle";
 
 type IndiaCirclesMapProps = {
   period: string;
@@ -78,19 +79,22 @@ export function IndiaCirclesMap({ period }: IndiaCirclesMapProps) {
   return (
     <section className="chart-card insights-map-card" aria-label={`${title} map for ${period}`}>
       <div className="insights-map-head">
-        <div className="tabs insights-map-tabs" role="tablist" aria-label="Map view">
-          {MAP_TABS.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              role="tab"
-              aria-selected={view === item.id}
-              className={`tab${view === item.id ? " is-active" : ""}`}
-              onClick={() => setView(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
+        <div className="insights-map-head-main">
+          <div className="tabs insights-map-tabs" role="tablist" aria-label="Map view">
+            {MAP_TABS.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={view === item.id}
+                className={`tab${view === item.id ? " is-active" : ""}`}
+                onClick={() => setView(item.id)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+          <InsightsWidgetInfo widgetId="targeted-circles" />
         </div>
         <p className="insights-map-period">{period}</p>
       </div>

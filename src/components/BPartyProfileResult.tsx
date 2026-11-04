@@ -9,8 +9,9 @@ import {
   type ProfileMetric,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
-import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
-import { RiskSpiderChart } from "./RiskSpiderChart";
+import type { PartyMode } from "./PartyModeToggle";
+import { ResultPartyHeader } from "./ResultPartyHeader";
+import { ThreatScoreCard } from "./ThreatScoreCard";
 
 type BPartyProfileResultProps = {
   query: string;
@@ -97,41 +98,6 @@ function Section({
   );
 }
 
-function ResultChrome({
-  masked,
-  meta,
-  badge,
-  onBack,
-  partyMode,
-  onPartyModeChange,
-}: {
-  masked: string;
-  meta: string;
-  badge?: boolean;
-  onBack: () => void;
-  partyMode: PartyMode;
-  onPartyModeChange: (mode: PartyMode) => void;
-}) {
-  return (
-    <header className="result-header has-party-mode">
-      <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
-        <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
-      </button>
-      <div className="result-heading">
-        <h1 className="result-title">{masked}</h1>
-        <p className="result-meta">
-          <span className="result-meta-icon">
-            <img src={assets.iconUser} alt="" width={16} height={16} />
-          </span>
-          {meta}
-          {badge ? <span className="result-status-badge is-no-evidence">No evidence</span> : null}
-        </p>
-      </div>
-      <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
-    </header>
-  );
-}
-
 export function BPartyProfileResult({
   query,
   onBack,
@@ -144,12 +110,19 @@ export function BPartyProfileResult({
   if (state === "zero") {
     return (
       <div className="main-inner is-result">
-        <ResultChrome
-          masked={masked}
-          meta="Receiver"
+        <ResultPartyHeader
+          title={masked}
           onBack={onBack}
           partyMode={partyMode}
           onPartyModeChange={onPartyModeChange}
+          meta={
+            <>
+              <span className="result-meta-icon">
+                <img src={assets.iconUser} alt="" width={16} height={16} />
+              </span>
+              Receiver
+            </>
+          }
         />
         <ExploreZeroState
           title="No vulnerability intelligence"
@@ -164,13 +137,22 @@ export function BPartyProfileResult({
 
   return (
     <div className="main-inner is-result is-profile">
-      <ResultChrome
-        masked={masked}
-        meta="Receiver vulnerability"
-        badge={state === "no-evidence"}
+      <ResultPartyHeader
+        title={masked}
         onBack={onBack}
         partyMode={partyMode}
         onPartyModeChange={onPartyModeChange}
+        meta={
+          <>
+            <span className="result-meta-icon">
+              <img src={assets.iconUser} alt="" width={16} height={16} />
+            </span>
+            Receiver vulnerability
+            {state === "no-evidence" ? (
+              <span className="result-status-badge is-no-evidence">No evidence</span>
+            ) : null}
+          </>
+        }
       />
 
       <div className="profile-layout">
@@ -260,22 +242,14 @@ export function BPartyProfileResult({
         </div>
 
         <aside className="profile-risk-col">
-          <Section title="Vulnerability drivers" className="is-chart">
-            <div className="profile-risk-row">
-              <RiskSpiderChart
+          <Section title="Vulnerability score" className="is-gauge">
+            <div className="b-party-gauge">
+              <ThreatScoreCard
                 score={profile.vulnerability.score}
                 label={profile.vulnerability.label}
-                tone={profile.vulnerability.tone}
-                axes={profile.vulnerability.weights.map((row) => ({
-                  label: row.label,
-                  strength: row.strength,
-                  value: row.value,
-                  threshold: row.threshold,
-                  thresholdStrength: row.thresholdStrength,
-                }))}
+                bare
               />
             </div>
-            <p className="b-party-vuln-desc">{profile.vulnerability.description}</p>
           </Section>
         </aside>
       </div>

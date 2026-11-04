@@ -16,6 +16,8 @@ export type InsightsWidgetId =
 export type InsightsWidgetContext = {
   id: InsightsWidgetId;
   title: string;
+  /** Short explainer shown on the title info-icon hover. */
+  description: string;
   summary: string;
   suggestedQuestions: string[];
 };
@@ -24,6 +26,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "users-protected": {
     id: "users-protected",
     title: "Users Protected",
+    description: "Unique end users shielded from scam messages in the selected period.",
     summary: "6.2M users protected in July 2026, up 45% vs June. Peak day 15 Jul at 1.7× daily average.",
     suggestedQuestions: [
       "Why did protected users jump 45% in July?",
@@ -34,6 +37,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "smishing-attacks": {
     id: "smishing-attacks",
     title: "Smishing Attacks",
+    description: "Total scam SMS volume detected across A2P and P2P channels.",
     summary: "18.8M scam messages in July — A2P +77% and P2P +133% month over month.",
     suggestedQuestions: [
       "Why is P2P growing faster than A2P?",
@@ -44,6 +48,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "impersonations-blocked": {
     id: "impersonations-blocked",
     title: "Impersonations Blocked",
+    description: "Brand impersonation attempts blocked via spoofed sender IDs or lookalike URLs.",
     summary: "0 impersonating URLs or sender IDs in July. Flat month over month.",
     suggestedQuestions: [
       "How are impersonations being eliminated?",
@@ -54,6 +59,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "customer-complaints": {
     id: "customer-complaints",
     title: "Customer Complaints",
+    description: "Customer-reported scam complaints attributed to this enterprise in the period.",
     summary: "0 customer complaints in July, down from 192 in April.",
     suggestedQuestions: [
       "What drove complaints down from 192 in April?",
@@ -64,6 +70,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "protection-trend": {
     id: "protection-trend",
     title: "Protection trend · Feb–Jul 2026",
+    description: "Month-over-month A2P and P2P scam traffic volumes for the enterprise.",
     summary: "A2P and P2P scam traffic both rising through Jul. 15 Jul spike ~2× daily July average.",
     suggestedQuestions: [
       "Explain the 15 July spike in context",
@@ -74,6 +81,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "channel-split": {
     id: "channel-split",
     title: "Channel split",
+    description: "How scam volume splits between application-to-person (A2P) and person-to-person (P2P) traffic.",
     summary: "18.8M total scams — 27% A2P (5.1M), 73% P2P (13.7M). 3.0 attacks per protected user.",
     suggestedQuestions: [
       "Why is P2P 73% of scam volume?",
@@ -84,6 +92,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "landscape-users": {
     id: "landscape-users",
     title: "Users landscape",
+    description: "New vs repeat victims and peak-day exposure across the selected period.",
     summary: "3.0M net new victims (+94% vs Jun). 1.4M repeat victims Apr–Jul.",
     suggestedQuestions: [
       "Who are the repeat victims?",
@@ -94,6 +103,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "landscape-modus": {
     id: "landscape-modus",
     title: "Modus operandi",
+    description: "Dominant scam use cases and call-to-action types seen in traffic.",
     summary: "Gambling dominates at 93%. URL CTAs 90–95%. 20K–25K distinct URLs per day.",
     suggestedQuestions: [
       "Why is gambling the top use case?",
@@ -104,6 +114,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "landscape-scammer": {
     id: "landscape-scammer",
     title: "Scammer concentration",
+    description: "How scam volume concentrates across unique senders and new vs repeat actors.",
     summary: "246.8K unique senders. Top 1% account for 93% of attacks. 113.8K net new scammers.",
     suggestedQuestions: [
       "Can we profile the top 1% of scammers?",
@@ -114,6 +125,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "targeted-circles": {
     id: "targeted-circles",
     title: "Top targeted circles",
+    description: "Geographic circles where scams originate or where users are most targeted.",
     summary: "Gujarat leads at 10% share. UP, Bihar, MP at 8%. Rajasthan at 7%.",
     suggestedQuestions: [
       "Why is Gujarat the most targeted circle?",
@@ -124,6 +136,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "use-case-mix": {
     id: "use-case-mix",
     title: "Use case mix · A2P vs P2P",
+    description: "Share of each scam use case within A2P and P2P channels. Outer bar is overall traffic scale.",
     summary: "Gambling ~93% in both channels. Investment and fake loan are minor but rising in P2P.",
     suggestedQuestions: [
       "How does gambling differ between A2P and P2P?",
@@ -134,6 +147,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "top-patterns": {
     id: "top-patterns",
     title: "Top scam patterns",
+    description: "Highest-volume message templates by share of scams and users reached.",
     summary: "Matka/gambling URLs dominate. Top pattern: 557K volume, 8.6% of scams, 136K users.",
     suggestedQuestions: [
       "Break down the top matka pattern",
@@ -144,6 +158,7 @@ export const INSIGHTS_WIDGET_CONTEXT: Record<InsightsWidgetId, InsightsWidgetCon
   "cta-intelligence": {
     id: "cta-intelligence",
     title: "CTA intelligence",
+    description: "Call-to-action types and distinct URL volume, including how quickly CTAs rotate.",
     summary: "90–95% URL CTAs. 20K–25K distinct URLs/day. High daily decay — most URLs live <24h.",
     suggestedQuestions: [
       "Why do CTAs rotate so quickly?",

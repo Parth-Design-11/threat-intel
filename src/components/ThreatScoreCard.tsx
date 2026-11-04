@@ -1,14 +1,22 @@
 import { assets } from "../assets";
 
 type ThreatScoreCardProps = {
-  score: number;
+  score: number | string;
   label: string;
+  title?: string;
+  /** Gauge only — no title or card chrome */
+  bare?: boolean;
 };
 
-export function ThreatScoreCard({ score, label }: ThreatScoreCardProps) {
+export function ThreatScoreCard({
+  score,
+  label,
+  title = "THREAT SCORE",
+  bare = false,
+}: ThreatScoreCardProps) {
   return (
-    <article className="threat-score-card">
-      <p className="threat-score-label">THREAT SCORE</p>
+    <article className={`threat-score-card${bare ? " is-bare" : ""}`}>
+      {bare ? null : <p className="threat-score-label">{title}</p>}
       <div className="threat-meter">
         <div className="threat-meter-base">
           <div className="threat-meter-layer">

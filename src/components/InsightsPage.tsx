@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CHANNEL_SPLIT,
   CTA_CHIPS,
@@ -17,10 +17,13 @@ import { IndiaCirclesMap } from "./IndiaCirclesMap";
 import { InsightsAiSection } from "./InsightsAiSection";
 import { InsightsAiWidget } from "./InsightsAiWidget";
 import { formatDateRange, InsightsDateRange, type DateRange } from "./InsightsDateRange";
+import { InsightsWidgetTitle } from "./InsightsWidgetTitle";
 
 type InsightsPageProps = {
   onAnalyze?: (excerpt: string) => void;
   onExplore?: () => void;
+  onOpenReports?: () => void;
+  onRequestCdrExport?: (periodLabel: string) => void;
 };
 
 const LANDSCAPE_WIDGET_IDS = ["landscape-users", "landscape-modus", "landscape-scammer"] as const;
@@ -33,12 +36,34 @@ const INSIGHTS_TABS = [
 
 type InsightsTab = (typeof INSIGHTS_TABS)[number]["id"];
 
-export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
+export function InsightsPage({
+  onAnalyze,
+  onExplore,
+  onOpenReports,
+  onRequestCdrExport,
+}: InsightsPageProps) {
   const [range, setRange] = useState<DateRange>({ start: "2026-07-01", end: "2026-07-31" });
   const [tab, setTab] = useState<InsightsTab>("landscape");
+  const [cdrToastOpen, setCdrToastOpen] = useState(false);
   const period = formatDateRange(range);
   const dataVolume = useDevOverride<"none" | "typical">("insights.data", "typical");
   const isEmpty = dataVolume === "none";
+
+  useEffect(() => {
+    if (!cdrToastOpen) return;
+    const timer = window.setTimeout(() => setCdrToastOpen(false), 6000);
+    return () => window.clearTimeout(timer);
+  }, [cdrToastOpen]);
+
+  function requestCdrExport() {
+    onRequestCdrExport?.(period);
+    setCdrToastOpen(true);
+  }
+
+  function openReports() {
+    setCdrToastOpen(false);
+    onOpenReports?.();
+  }
 
   return (
     <div className={`main-inner is-insights${isEmpty ? " is-insights-empty" : ""}`}>
@@ -51,11 +76,30 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
         </div>
         <div className="insights-actions">
           <InsightsDateRange value={range} onChange={setRange} />
-          <button type="button" className="btn-cancel">
-            Export PDF
+          <button type="button" className="btn-cancel" onClick={requestCdrExport}>
+            Download CDR
           </button>
         </div>
       </div>
+
+      {cdrToastOpen ? (
+        <div className="insights-toast" role="status" aria-live="polite">
+          <div className="insights-toast-body">
+            <p>Your report will be ready for download soon. Go to Reports to download them.</p>
+            <button type="button" className="insights-toast-link" onClick={openReports}>
+              Open Reports
+            </button>
+          </div>
+          <button
+            type="button"
+            className="insights-toast-dismiss"
+            aria-label="Dismiss"
+            onClick={() => setCdrToastOpen(false)}
+          >
+            ×
+          </button>
+        </div>
+      ) : null}
 
       {isEmpty ? (
         <DashboardZeroState onExplore={() => onExplore?.()} />
@@ -63,7 +107,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
         <>
       <section className="metrics insights-metrics" aria-label="Executive summary">
         <InsightsAiWidget widgetId="users-protected" period={period} className="metric-card">
-          <p className="metric-label">Users Protected</p>
+          <InsightsWidgetTitle widgetId="users-protected" className="metric-label">
+            Users Protected
+          </InsightsWidgetTitle>
           <div className="metric-row">
             <p className="metric-value">{INSIGHTS_SUMMARY.usersProtected}</p>
             <span className="metric-trend is-up">
@@ -73,7 +119,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
           </div>
         </InsightsAiWidget>
         <InsightsAiWidget widgetId="smishing-attacks" period={period} className="metric-card">
-          <p className="metric-label">Smishing Attacks</p>
+          <InsightsWidgetTitle widgetId="smishing-attacks" className="metric-label">
+            Smishing Attacks
+          </InsightsWidgetTitle>
           <div className="metric-row">
             <p className="metric-value">{INSIGHTS_SUMMARY.smishingAttacks}</p>
             <span className="metric-trend is-warn">
@@ -83,7 +131,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
           </div>
         </InsightsAiWidget>
         <InsightsAiWidget widgetId="impersonations-blocked" period={period} className="metric-card">
-          <p className="metric-label">Impersonations Blocked</p>
+          <InsightsWidgetTitle widgetId="impersonations-blocked" className="metric-label">
+            Impersonations Blocked
+          </InsightsWidgetTitle>
           <div className="metric-row">
             <p className="metric-value">{INSIGHTS_SUMMARY.impersonationsBlocked}</p>
             <span className="metric-trend is-down">
@@ -93,7 +143,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
           </div>
         </InsightsAiWidget>
         <InsightsAiWidget widgetId="customer-complaints" period={period} className="metric-card">
-          <p className="metric-label">Customer Complaints</p>
+          <InsightsWidgetTitle widgetId="customer-complaints" className="metric-label">
+            Customer Complaints
+          </InsightsWidgetTitle>
           <div className="metric-row">
             <p className="metric-value">{INSIGHTS_SUMMARY.customerComplaints}</p>
             <span className="metric-trend is-down">
@@ -132,7 +184,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
         >
           <InsightsAiWidget widgetId="protection-trend" period={period} className="chart-card insights-chart-card">
             <div className="chart-header">
-              <p className="chart-title">Protection trend · Feb–Jul 2026</p>
+              <InsightsWidgetTitle widgetId="protection-trend" className="chart-title">
+                Protection trend · Feb–Jul 2026
+              </InsightsWidgetTitle>
             </div>
             <div className="insights-bar-chart" aria-hidden="true">
               {TREND_MONTHS.map((month) => (
@@ -160,7 +214,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
           </InsightsAiWidget>
 
           <InsightsAiWidget widgetId="channel-split" period={period} className="metric-card insights-side-card">
-            <p className="insights-card-title">Channel split · {period}</p>
+            <InsightsWidgetTitle widgetId="channel-split" className="insights-card-title">
+              Channel split · {period}
+            </InsightsWidgetTitle>
             <div className="insights-stat-list">
               <div className="insights-stat-row">
                 <span>Total scam messages</span>
@@ -211,7 +267,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
               period={period}
               className="metric-card insights-side-card"
             >
-              <p className="insights-card-title">{card.title}</p>
+              <InsightsWidgetTitle widgetId={LANDSCAPE_WIDGET_IDS[index]} className="insights-card-title">
+                {card.title}
+              </InsightsWidgetTitle>
               <div className="insights-stat-list">
                 {card.rows.map(([label, value]) => (
                   <div key={label} className="insights-stat-row">
@@ -230,7 +288,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
           </InsightsAiWidget>
 
           <InsightsAiWidget widgetId="use-case-mix" period={period} className="metric-card insights-side-card">
-            <p className="insights-card-title">Use case mix · A2P vs P2P</p>
+            <InsightsWidgetTitle widgetId="use-case-mix" className="insights-card-title">
+              Use case mix · A2P vs P2P
+            </InsightsWidgetTitle>
             <div className="insights-use-cases">
               {USE_CASES.map((item) => (
                 <div key={item.label} className="insights-use-case">
@@ -238,10 +298,14 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
                     <span>{item.label}</span>
                     <strong>{item.detail}</strong>
                   </div>
-                  <div className="insights-use-case-track">
+                  <div className="insights-use-case-track" aria-hidden="true">
                     <div
-                      className={`insights-use-case-fill${item.muted ? " is-muted" : ""}`}
-                      style={{ width: `${item.width}%` }}
+                      className="insights-use-case-fill is-p2p"
+                      style={{ width: `${item.p2p}%`, zIndex: item.p2p <= item.a2p ? 2 : 1 }}
+                    />
+                    <div
+                      className="insights-use-case-fill is-a2p"
+                      style={{ width: `${item.a2p}%`, zIndex: item.a2p <= item.p2p ? 2 : 1 }}
                     />
                   </div>
                 </div>
@@ -260,7 +324,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
           aria-labelledby="insights-tab-patterns"
         >
         <InsightsAiWidget widgetId="top-patterns" period={period} className="table-card insights-table-card">
-          <p className="insights-card-title is-table">Top scam patterns · {period}</p>
+          <InsightsWidgetTitle widgetId="top-patterns" className="insights-card-title is-table">
+            Top scam patterns · {period}
+          </InsightsWidgetTitle>
           <div className="table-wrap">
             <div className="thead insights-patterns-head">
               <div className="th">Pattern excerpt</div>
@@ -289,7 +355,9 @@ export function InsightsPage({ onAnalyze, onExplore }: InsightsPageProps) {
 
         <InsightsAiWidget widgetId="cta-intelligence" period={period} className="chart-card insights-chart-card">
           <div className="chart-header">
-            <p className="chart-title">CTA intelligence · {period}</p>
+            <InsightsWidgetTitle widgetId="cta-intelligence" className="chart-title">
+              CTA intelligence · {period}
+            </InsightsWidgetTitle>
           </div>
           <div className="insights-chips">
             {CTA_CHIPS.map((chip) => (

@@ -9,8 +9,9 @@ import {
   resolvePhoneResultState,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
-import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
+import type { PartyMode } from "./PartyModeToggle";
 import { ResultEmptyPanel } from "./ResultEmptyPanel";
+import { ResultPartyHeader } from "./ResultPartyHeader";
 import { ThreatScoreCard } from "./ThreatScoreCard";
 
 type APartyResultProps = {
@@ -27,21 +28,20 @@ export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: AP
   if (state === "zero") {
     return (
       <div className="main-inner is-result">
-        <header className="result-header has-party-mode">
-          <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
-            <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
-          </button>
-          <div className="result-heading">
-            <h1 className="result-title">{masked}</h1>
-            <p className="result-meta">
+        <ResultPartyHeader
+          title={masked}
+          onBack={onBack}
+          partyMode={partyMode}
+          onPartyModeChange={onPartyModeChange}
+          meta={
+            <>
               <span className="result-meta-icon">
                 <img src={assets.iconUser} alt="" width={16} height={16} />
               </span>
               Sender
-            </p>
-          </div>
-          <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
-        </header>
+            </>
+          }
+        />
 
         <ExploreZeroState
           title="No intelligence found"
@@ -58,13 +58,13 @@ export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: AP
 
   return (
     <div className="main-inner is-result">
-      <header className="result-header has-party-mode">
-        <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
-          <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
-        </button>
-        <div className="result-heading">
-          <h1 className="result-title">{masked}</h1>
-          <p className="result-meta">
+      <ResultPartyHeader
+        title={masked}
+        onBack={onBack}
+        partyMode={partyMode}
+        onPartyModeChange={onPartyModeChange}
+        meta={
+          <>
             <span className="result-meta-icon">
               <img src={assets.iconUser} alt="" width={16} height={16} />
             </span>
@@ -72,10 +72,9 @@ export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: AP
             {state === "no-evidence" ? (
               <span className="result-status-badge is-no-evidence">No evidence</span>
             ) : null}
-          </p>
-        </div>
-        <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
-      </header>
+          </>
+        }
+      />
 
       <div className="result-layout">
         <div className="result-main">

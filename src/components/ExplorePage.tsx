@@ -86,9 +86,7 @@ export function ExplorePage() {
     setSubmitted(false);
     setNumberLoading(false);
     setError("");
-    if (type !== "risk-score") {
-      setPartyMode("risk");
-    }
+    setPartyMode("risk");
   }, [type]);
 
   useEffect(() => {
@@ -142,9 +140,6 @@ export function ExplorePage() {
   function changePartyMode(mode: PartyMode) {
     if (mode === partyMode) return;
     setPartyMode(mode);
-    if (type === "risk-score" && submitted) {
-      setNumberLoading(true);
-    }
   }
 
   const aParty = useDevOverride(
@@ -237,7 +232,6 @@ export function ExplorePage() {
   }
 
   const isPatternsTab = type === "message-patterns";
-  const isNumberTab = type === "risk-score";
 
   return (
     <div className={`main-inner is-explore${isPatternsTab ? " is-explore-patterns" : ""}`}>
@@ -263,8 +257,6 @@ export function ExplorePage() {
             </button>
           ))}
         </div>
-
-        {isNumberTab ? <PartyModeToggle value={partyMode} onChange={setPartyMode} /> : null}
 
         <form className="explore-search" onSubmit={submit}>
           <label className="explore-field">

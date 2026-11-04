@@ -88,10 +88,10 @@ export const SCAMMER_CIRCLES: CircleTarget[] = [
 ];
 
 export const USE_CASES = [
-  { label: "Gambling", detail: "92% A2P · 93% P2P", width: 93 },
-  { label: "Investment / business", detail: "1% A2P · 4% P2P", width: 18, muted: true },
-  { label: "Fake loan", detail: "3% A2P · 1% P2P", width: 10, muted: true },
-  { label: "Dating / job / other", detail: "4% combined", width: 8, muted: true },
+  { label: "Gambling", detail: "92% A2P · 93% P2P", a2p: 92, p2p: 93 },
+  { label: "Investment / business", detail: "1% A2P · 4% P2P", a2p: 1, p2p: 4 },
+  { label: "Fake loan", detail: "3% A2P · 1% P2P", a2p: 3, p2p: 1 },
+  { label: "Dating / job / other", detail: "4% combined", a2p: 4, p2p: 4 },
 ];
 
 export const TOP_PATTERNS = [
@@ -187,3 +187,49 @@ export const AI_INSIGHTS = {
   lead: string;
   cards: { title: string; parts: InsightCopyPart[] }[];
 };
+
+export type ReportExportStatus = "ready" | "preparing" | "failed";
+
+export type ReportExport = {
+  id: string;
+  name: string;
+  type: string;
+  status: ReportExportStatus;
+  createdAt: string;
+  createdBy: string;
+};
+
+export const REPORT_EXPORTS: ReportExport[] = [
+  {
+    id: "r1",
+    name: "CDR · Jul 2026",
+    type: "CDR",
+    status: "ready",
+    createdAt: "Nov 3, 2026 · 4:12 PM",
+    createdBy: "Anita Sharma",
+  },
+  {
+    id: "r2",
+    name: "CDR · Jun 2026",
+    type: "CDR",
+    status: "ready",
+    createdAt: "Oct 12, 2026 · 11:05 AM",
+    createdBy: "Rahul Mehta",
+  },
+  {
+    id: "r3",
+    name: "CDR · May 2026",
+    type: "CDR",
+    status: "ready",
+    createdAt: "Sep 8, 2026 · 2:40 PM",
+    createdBy: "Anita Sharma",
+  },
+  {
+    id: "r4",
+    name: "Threat landscape summary · Q2",
+    type: "Summary",
+    status: "ready",
+    createdAt: "Aug 21, 2026 · 9:18 AM",
+    createdBy: "Priya Nair",
+  },
+];
