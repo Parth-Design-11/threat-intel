@@ -9,11 +9,14 @@ import {
   type ProfileMetric,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
+import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
 import { RiskSpiderChart } from "./RiskSpiderChart";
 
 type APartyProfileResultProps = {
   query: string;
   onBack: () => void;
+  partyMode: PartyMode;
+  onPartyModeChange: (mode: PartyMode) => void;
 };
 
 function AlertGlyph() {
@@ -94,14 +97,19 @@ function Section({
   );
 }
 
-export function APartyProfileResult({ query, onBack }: APartyProfileResultProps) {
+export function APartyProfileResult({
+  query,
+  onBack,
+  partyMode,
+  onPartyModeChange,
+}: APartyProfileResultProps) {
   const masked = maskIdentifier(query);
   const state = useDevOverride("explore.aParty", resolvePhoneResultState(query));
 
   if (state === "zero") {
     return (
       <div className="main-inner is-result">
-        <header className="result-header">
+        <header className="result-header has-party-mode">
           <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
             <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
           </button>
@@ -114,6 +122,7 @@ export function APartyProfileResult({ query, onBack }: APartyProfileResultProps)
               Sender
             </p>
           </div>
+          <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
         </header>
         <ExploreZeroState
           title="No intelligence found"
@@ -128,7 +137,7 @@ export function APartyProfileResult({ query, onBack }: APartyProfileResultProps)
 
   return (
     <div className="main-inner is-result is-profile">
-      <header className="result-header">
+      <header className="result-header has-party-mode">
         <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
           <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
         </button>
@@ -144,6 +153,7 @@ export function APartyProfileResult({ query, onBack }: APartyProfileResultProps)
             ) : null}
           </p>
         </div>
+        <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
       </header>
 
       <div className="profile-layout">

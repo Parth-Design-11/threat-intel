@@ -92,6 +92,13 @@ export const prototypeConfig: PrototypeConfig = {
     },
     {
       kind: "status",
+      id: "explore.bParty",
+      label: "B-Party result",
+      screen: "explore",
+      values: ["full", "zero", "no-evidence"],
+    },
+    {
+      kind: "status",
       id: "explore.cta",
       label: "CTA result",
       screen: "explore",
@@ -141,6 +148,21 @@ export const prototypeConfig: PrototypeConfig = {
       id: "a-party-profile",
       label: "A-Party: profile layout",
       set: { "app.section": "explore", "explore.aParty": "full", "explore.aParty.layout": "profile" },
+    },
+    {
+      id: "b-party-empty",
+      label: "B-Party: no intelligence",
+      set: { "app.section": "explore", "explore.bParty": "zero" },
+    },
+    {
+      id: "b-party-no-evidence",
+      label: "B-Party: no evidence",
+      set: { "app.section": "explore", "explore.bParty": "no-evidence" },
+    },
+    {
+      id: "b-party-hit",
+      label: "B-Party: vulnerability hit",
+      set: { "app.section": "explore", "explore.bParty": "full" },
     },
     {
       id: "cta-empty",

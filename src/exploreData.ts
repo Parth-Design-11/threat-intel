@@ -53,6 +53,11 @@ export function resolvePhoneResultState(query: string): ExploreResultState {
   return "full";
 }
 
+/** Same demo rules as phone Risk — independent product mode, shared query conventions. */
+export function resolveBPartyResultState(query: string): ExploreResultState {
+  return resolvePhoneResultState(query);
+}
+
 /** Demo: https://zero.example → zero; https://noevidence.example → no-evidence; else → full */
 export function resolveCtaResultState(query: string): ExploreResultState {
   const normalized = normalizeExploreQuery(query);
@@ -842,3 +847,200 @@ export const CTA_RELATED: RelatedAsset[] = [
   { id: "c7", value: "+6287*******21", kind: "Sender", reportedBy: "Telco" },
   { id: "c8", value: "https://rebrand.ly/unlock", kind: "URL", reportedBy: "Telco" },
 ];
+
+export type BPartyWeight = {
+  label: string;
+  weight: string;
+  value: string;
+  strength: number;
+  threshold: string;
+  thresholdStrength: number;
+};
+
+export type BPartyTimelineEvent = {
+  id: string;
+  at: string;
+  channel: string;
+  attacker: string;
+  note: string;
+};
+
+export type BPartyAttacker = {
+  id: string;
+  display: string;
+  attackCount: string;
+  share: string;
+};
+
+export type BPartyChannelRow = {
+  channel: string;
+  pattern: string;
+  count: string;
+  share: string;
+};
+
+export type BPartyProfile = {
+  vulnerability: {
+    score: string;
+    label: string;
+    tone: ProfileTone;
+    description: string;
+    weights: BPartyWeight[];
+  };
+  stats: ProfileMetric[];
+  timeline: BPartyTimelineEvent[];
+  attackers: BPartyAttacker[];
+  channels: BPartyChannelRow[];
+};
+
+export const B_PARTY_PROFILE: BPartyProfile = {
+  vulnerability: {
+    score: "72",
+    label: "HIGH VULNERABILITY",
+    tone: "risk",
+    description:
+      "Receiver exposure from inbound scam pressure — attack volume, unique senders, channel mix, and recent intensity.",
+    weights: [
+      {
+        label: "Attack volume",
+        weight: "0.30",
+        value: "1,284",
+        strength: 0.78,
+        threshold: "120",
+        thresholdStrength: 0.22,
+      },
+      {
+        label: "Unique attackers",
+        weight: "0.25",
+        value: "86",
+        strength: 0.74,
+        threshold: "12",
+        thresholdStrength: 0.2,
+      },
+      {
+        label: "Recent intensity",
+        weight: "0.20",
+        value: "214 / 30d",
+        strength: 0.81,
+        threshold: "25",
+        thresholdStrength: 0.18,
+      },
+      {
+        label: "Channel diversity",
+        weight: "0.15",
+        value: "4",
+        strength: 0.62,
+        threshold: "2",
+        thresholdStrength: 0.25,
+      },
+      {
+        label: "Repeat pressure",
+        weight: "0.10",
+        value: "0.41",
+        strength: 0.55,
+        threshold: "0.20",
+        thresholdStrength: 0.2,
+      },
+    ],
+  },
+  stats: [
+    {
+      label: "Attack count",
+      value: "1,284",
+      tone: "risk",
+      alert: "Inbound scam attempts against this MSISDN across observed channels.",
+    },
+    { label: "First attack", value: "Jan 14, 2026", tone: "moderate" },
+    { label: "Last attack", value: "Jul 22, 2026", tone: "risk" },
+    {
+      label: "Unique attackers",
+      value: "86",
+      tone: "risk",
+      hint: "Distinct A-party senders observed targeting this number.",
+    },
+    { label: "Channels", value: "SMS · Voice · WhatsApp · RCS" },
+    {
+      label: "Last 30 days",
+      value: "214 attacks",
+      tone: "risk",
+      alert: "Recent inbound volume is elevated versus a typical personal baseline.",
+    },
+  ],
+  timeline: [
+    {
+      id: "t1",
+      at: "Jul 22, 2026 · 09:14",
+      channel: "SMS",
+      attacker: "+6281*******44",
+      note: "KYC lure with short-link CTA",
+    },
+    {
+      id: "t2",
+      at: "Jul 21, 2026 · 18:02",
+      channel: "WhatsApp",
+      attacker: "+6285*******10",
+      note: "Wallet unlock urgency pattern",
+    },
+    {
+      id: "t3",
+      at: "Jul 18, 2026 · 11:40",
+      channel: "Voice",
+      attacker: "+6221*******90",
+      note: "Contact-center cluster callback",
+    },
+    {
+      id: "t4",
+      at: "Jul 12, 2026 · 07:55",
+      channel: "RCS",
+      attacker: "+6287*******21",
+      note: "Bank OTP phishing template",
+    },
+    {
+      id: "t5",
+      at: "Jun 30, 2026 · 16:20",
+      channel: "SMS",
+      attacker: "+6281*******44",
+      note: "Repeat sender — same pattern family",
+    },
+  ],
+  attackers: [
+    { id: "a1", display: "+6281*******44", attackCount: "312", share: "24%" },
+    { id: "a2", display: "+6285*******10", attackCount: "198", share: "15%" },
+    { id: "a3", display: "+6221*******90", attackCount: "141", share: "11%" },
+    { id: "a4", display: "+6287*******21", attackCount: "96", share: "7%" },
+    { id: "a5", display: "+6282*******77", attackCount: "74", share: "6%" },
+  ],
+  channels: [
+    { channel: "SMS", pattern: "KYC / account verify", count: "618", share: "48%" },
+    { channel: "WhatsApp", pattern: "Wallet unlock", count: "287", share: "22%" },
+    { channel: "Voice", pattern: "Callback / IVR cluster", count: "241", share: "19%" },
+    { channel: "RCS", pattern: "OTP / bank phishing", count: "138", share: "11%" },
+  ],
+};
+
+export const B_PARTY_PROFILE_NO_EVIDENCE: BPartyProfile = {
+  vulnerability: {
+    score: "—",
+    label: "UNSCORED",
+    tone: "neutral",
+    description: "Number is indexed but inbound attack evidence is insufficient to score vulnerability.",
+    weights: [
+      { label: "Attack volume", weight: "0.30", value: "—", strength: 0, threshold: "120", thresholdStrength: 0.22 },
+      { label: "Unique attackers", weight: "0.25", value: "—", strength: 0, threshold: "12", thresholdStrength: 0.2 },
+      { label: "Recent intensity", weight: "0.20", value: "—", strength: 0, threshold: "25", thresholdStrength: 0.18 },
+      { label: "Channel diversity", weight: "0.15", value: "—", strength: 0, threshold: "2", thresholdStrength: 0.25 },
+      { label: "Repeat pressure", weight: "0.10", value: "—", strength: 0, threshold: "0.20", thresholdStrength: 0.2 },
+    ],
+  },
+  stats: [
+    { label: "Attack count", value: "0" },
+    { label: "First attack", value: "—" },
+    { label: "Last attack", value: "—" },
+    { label: "Unique attackers", value: "0" },
+    { label: "Channels", value: "—" },
+    { label: "Last 30 days", value: "0 attacks" },
+  ],
+  timeline: [],
+  attackers: [],
+  channels: [],
+};

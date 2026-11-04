@@ -9,22 +9,25 @@ import {
   resolvePhoneResultState,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
+import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
 import { ResultEmptyPanel } from "./ResultEmptyPanel";
 import { ThreatScoreCard } from "./ThreatScoreCard";
 
 type APartyResultProps = {
   query: string;
   onBack: () => void;
+  partyMode: PartyMode;
+  onPartyModeChange: (mode: PartyMode) => void;
 };
 
-export function APartyResult({ query, onBack }: APartyResultProps) {
+export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: APartyResultProps) {
   const masked = maskIdentifier(query);
   const state = useDevOverride("explore.aParty", resolvePhoneResultState(query));
 
   if (state === "zero") {
     return (
       <div className="main-inner is-result">
-        <header className="result-header">
+        <header className="result-header has-party-mode">
           <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
             <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
           </button>
@@ -37,6 +40,7 @@ export function APartyResult({ query, onBack }: APartyResultProps) {
               Sender
             </p>
           </div>
+          <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
         </header>
 
         <ExploreZeroState
@@ -54,7 +58,7 @@ export function APartyResult({ query, onBack }: APartyResultProps) {
 
   return (
     <div className="main-inner is-result">
-      <header className="result-header">
+      <header className="result-header has-party-mode">
         <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
           <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
         </button>
@@ -70,6 +74,7 @@ export function APartyResult({ query, onBack }: APartyResultProps) {
             ) : null}
           </p>
         </div>
+        <PartyModeToggle value={partyMode} onChange={onPartyModeChange} compact />
       </header>
 
       <div className="result-layout">

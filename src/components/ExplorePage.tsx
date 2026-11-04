@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { assets } from "../assets";
-import { resolveCtaResultState, resolvePhoneResultState } from "../exploreData";
+import { resolveBPartyResultState, resolveCtaResultState, resolvePhoneResultState } from "../exploreData";
 import { addExploreHistory, getExploreHistory, type ExploreHistoryEntry } from "../exploreHistory";
 import { useDevOverride } from "../devtools";
 import { APartyProfileResult } from "./APartyProfileResult";
 import { APartyResult } from "./APartyResult";
+import { BPartyProfileResult } from "./BPartyProfileResult";
 import { CtaResult } from "./CtaResult";
 import { RiskSearchLoader } from "./RiskSearchLoader";
 import { MessagePatternDetail } from "./MessagePatternDetail";
 import { MessagePatternsList } from "./MessagePatternsList";
+import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
 
 export const EXPLORE_TYPES = ["risk-score", "message-patterns", "cta"] as const;
 export type ExploreType = (typeof EXPLORE_TYPES)[number];
@@ -65,9 +67,10 @@ function HistoryIcon() {
 
 export function ExplorePage() {
   const [type, setType] = useState<ExploreType>("risk-score");
+  const [partyMode, setPartyMode] = useState<PartyMode>("risk");
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [aPartyLoading, setAPartyLoading] = useState(false);
+  const [numberLoading, setNumberLoading] = useState(false);
   const [error, setError] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [selectedPatternId, setSelectedPatternId] = useState<string | null>(null);
@@ -81,8 +84,11 @@ export function ExplorePage() {
     setHistoryOpen(false);
     setSelectedPatternId(null);
     setSubmitted(false);
-    setAPartyLoading(false);
+    setNumberLoading(false);
     setError("");
+    if (type !== "risk-score") {
+      setPartyMode("risk");
+    }
   }, [type]);
 
   useEffect(() => {
@@ -121,7 +127,7 @@ export function ExplorePage() {
     setHistory(getExploreHistory(type));
     setHistoryOpen(false);
     setSubmitted(true);
-    setAPartyLoading(type === "risk-score");
+    setNumberLoading(type === "risk-score");
   }
 
   function submit(event?: FormEvent) {
@@ -133,38 +139,87 @@ export function ExplorePage() {
     runSearch(entry.query);
   }
 
+  function changePartyMode(mode: PartyMode) {
+    if (mode === partyMode) return;
+    setPartyMode(mode);
+    if (type === "risk-score" && submitted) {
+      setNumberLoading(true);
+    }
+  }
+
   const aParty = useDevOverride(
     "explore.aParty",
-    type === "risk-score" && submitted ? resolvePhoneResultState(query) : null,
+    type === "risk-score" && submitted && partyMode === "risk" ? resolvePhoneResultState(query) : null,
   );
   const aPartyLayout = useDevOverride<"current" | "profile">("explore.aParty.layout", "profile");
+  const bParty = useDevOverride(
+    "explore.bParty",
+    type === "risk-score" && submitted && partyMode === "vulnerability"
+      ? resolveBPartyResultState(query)
+      : null,
+  );
   const cta = useDevOverride(
     "explore.cta",
     type === "cta" && submitted ? resolveCtaResultState(query) : null,
   );
 
-  if (aPartyLoading) {
+  // DevTools B-Party scenarios force a result while mode may still be Risk — align the toggle.
+  useEffect(() => {
+    if (type === "risk-score" && bParty && !aParty && partyMode !== "vulnerability") {
+      setPartyMode("vulnerability");
+    }
+  }, [type, bParty, aParty, partyMode]);
+
+  if (numberLoading) {
+    const isVulnerability = partyMode === "vulnerability";
     return (
       <RiskSearchLoader
         query={query.trim() || "+919876543210"}
-        onDone={() => setAPartyLoading(false)}
+        profileMeta={isVulnerability ? "Receiver vulnerability" : "Sender profile"}
+        scorePhaseLabel={isVulnerability ? "Calculating Vulnerability score" : "Calculating Risk score"}
+        onDone={() => setNumberLoading(false)}
         onBack={() => {
-          setAPartyLoading(false);
+          setNumberLoading(false);
           setSubmitted(false);
         }}
       />
     );
   }
 
-  if (aParty) {
+  if (partyMode === "vulnerability" && bParty) {
+    return (
+      <BPartyProfileResult
+        query={query.trim() || "+919876543210"}
+        onBack={() => setSubmitted(false)}
+        partyMode={partyMode}
+        onPartyModeChange={changePartyMode}
+      />
+    );
+  }
+
+  if (partyMode === "risk" && aParty) {
     const resultProps = {
       query: query.trim() || "+919876543210",
       onBack: () => setSubmitted(false),
+      partyMode,
+      onPartyModeChange: changePartyMode,
     };
     return aPartyLayout === "profile" ? (
       <APartyProfileResult {...resultProps} />
     ) : (
       <APartyResult {...resultProps} />
+    );
+  }
+
+  // DevTools: forced B-Party override before mode has flipped via the effect above
+  if (bParty) {
+    return (
+      <BPartyProfileResult
+        query={query.trim() || "+919876543210"}
+        onBack={() => setSubmitted(false)}
+        partyMode="vulnerability"
+        onPartyModeChange={changePartyMode}
+      />
     );
   }
 
@@ -182,6 +237,7 @@ export function ExplorePage() {
   }
 
   const isPatternsTab = type === "message-patterns";
+  const isNumberTab = type === "risk-score";
 
   return (
     <div className={`main-inner is-explore${isPatternsTab ? " is-explore-patterns" : ""}`}>
@@ -207,6 +263,8 @@ export function ExplorePage() {
             </button>
           ))}
         </div>
+
+        {isNumberTab ? <PartyModeToggle value={partyMode} onChange={setPartyMode} /> : null}
 
         <form className="explore-search" onSubmit={submit}>
           <label className="explore-field">

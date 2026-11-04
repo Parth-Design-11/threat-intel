@@ -2,13 +2,13 @@ import { useEffect, useRef, useState } from "react";
 import { assets } from "../assets";
 import { maskIdentifier } from "../exploreData";
 
-const PHASES = [
+const BASE_PHASES = [
   { id: "fetch", label: "Fetching the data from 10+ sources", duration: 1800 },
   { id: "classify", label: "Classifying evidences", duration: 1200 },
   { id: "score", label: "Calculating Risk score", duration: 1800 },
 ] as const;
 
-type LoaderPhase = (typeof PHASES)[number]["id"];
+type LoaderPhase = (typeof BASE_PHASES)[number]["id"];
 
 const AXIS_LABELS = [
   "Scam ratio",
@@ -125,18 +125,35 @@ type RiskSearchLoaderProps = {
   query: string;
   onDone: () => void;
   onBack: () => void;
+  profileMeta?: string;
+  scorePhaseLabel?: string;
 };
 
-export function RiskSearchLoader({ query, onDone, onBack }: RiskSearchLoaderProps) {
+export function RiskSearchLoader({
+  query,
+  onDone,
+  onBack,
+  profileMeta = "Sender profile",
+  scorePhaseLabel = "Calculating Risk score",
+}: RiskSearchLoaderProps) {
   const [phase, setPhase] = useState<LoaderPhase>("fetch");
   const onDoneRef = useRef(onDone);
   onDoneRef.current = onDone;
 
+  const phases = [
+    BASE_PHASES[0],
+    BASE_PHASES[1],
+    { ...BASE_PHASES[2], label: scorePhaseLabel },
+  ] as const;
+
   useEffect(() => {
     const timers = [
-      window.setTimeout(() => setPhase("classify"), PHASES[0].duration),
-      window.setTimeout(() => setPhase("score"), PHASES[0].duration + PHASES[1].duration),
-      window.setTimeout(() => onDoneRef.current(), PHASES[0].duration + PHASES[1].duration + PHASES[2].duration),
+      window.setTimeout(() => setPhase("classify"), BASE_PHASES[0].duration),
+      window.setTimeout(() => setPhase("score"), BASE_PHASES[0].duration + BASE_PHASES[1].duration),
+      window.setTimeout(
+        () => onDoneRef.current(),
+        BASE_PHASES[0].duration + BASE_PHASES[1].duration + BASE_PHASES[2].duration,
+      ),
     ];
     return () => timers.forEach((timer) => window.clearTimeout(timer));
   }, []);
@@ -153,7 +170,7 @@ export function RiskSearchLoader({ query, onDone, onBack }: RiskSearchLoaderProp
             <span className="result-meta-icon">
               <img src={assets.iconUser} alt="" width={16} height={16} />
             </span>
-            Sender profile
+            {profileMeta}
           </p>
         </div>
       </header>
@@ -210,8 +227,8 @@ export function RiskSearchLoader({ query, onDone, onBack }: RiskSearchLoaderProp
         </div>
 
         <div className="profile-loader-copy">
-          {PHASES.map((item, index) => {
-            const current = PHASES.findIndex((entry) => entry.id === phase);
+          {phases.map((item, index) => {
+            const current = phases.findIndex((entry) => entry.id === phase);
             const state = index === current ? "is-in" : index < current ? "is-out" : "is-wait";
             return (
               <p key={item.id} className={`profile-loader-status ${state}`} aria-hidden={state !== "is-in"}>
@@ -225,8 +242,8 @@ export function RiskSearchLoader({ query, onDone, onBack }: RiskSearchLoaderProp
             );
           })}
           <ol className="profile-loader-steps" aria-hidden="true">
-            {PHASES.map((item, index) => {
-              const current = PHASES.findIndex((entry) => entry.id === phase);
+            {phases.map((item, index) => {
+              const current = phases.findIndex((entry) => entry.id === phase);
               return (
                 <li
                   key={item.id}
