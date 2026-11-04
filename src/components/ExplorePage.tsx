@@ -10,7 +10,7 @@ import { CtaResult } from "./CtaResult";
 import { RiskSearchLoader } from "./RiskSearchLoader";
 import { MessagePatternDetail } from "./MessagePatternDetail";
 import { MessagePatternsList } from "./MessagePatternsList";
-import { PartyModeToggle, type PartyMode } from "./PartyModeToggle";
+import type { PartyMode } from "./PartyModeToggle";
 
 export const EXPLORE_TYPES = ["risk-score", "message-patterns", "cta"] as const;
 export type ExploreType = (typeof EXPLORE_TYPES)[number];
