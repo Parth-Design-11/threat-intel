@@ -1,4 +1,4 @@
-export type ExploreType = "risk-score" | "cta" | "message-patterns";
+export type ExploreType = "risk-score" | "cta" | "message-patterns" | "evidence";
 
 export type ExploreHistoryEntry = {
   query: string;

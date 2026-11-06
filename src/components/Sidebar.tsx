@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { assets } from "../assets";
 
-export type AppSection = "dashboard" | "explore" | "reports" | "api" | "settings";
+export type AppSection = "dashboard" | "explore" | "evidence" | "reports" | "api" | "settings";
 
 const ITEMS = [
-  { id: "dashboard", label: "Dashboard", icon: assets.iconHome },
-  { id: "explore", label: "Explore Intelligence", icon: assets.iconExplore },
+  { id: "dashboard", label: "Impact Dashboard", icon: assets.iconHome },
+  { id: "explore", label: "Threat Intelligence", icon: assets.iconExplore },
+  { id: "evidence", label: "Evidence", icon: assets.iconMessage },
   { id: "reports", label: "Reports", icon: assets.iconUpload },
   { id: "api", label: "API Management", icon: assets.iconCode, isCode: true },
   { id: "settings", label: "Settings", icon: assets.iconSettings },

@@ -73,7 +73,7 @@ export const prototypeConfig: PrototypeConfig = {
       kind: "flow",
       id: "app.section",
       label: "Section",
-      steps: ["dashboard", "explore", "reports", "api", "settings"],
+      steps: ["dashboard", "explore", "evidence", "reports", "api", "settings"],
     },
     {
       kind: "status",

@@ -4962,6 +4962,263 @@ img {
   gap: 20px;
 }
 
+.main-inner.is-evidence {
+  gap: 20px;
+}
+
+.evidence-landing {
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.evidence-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  margin-top: 28px;
+}
+
+.evidence-search-shell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 6px 6px 6px 20px;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: var(--shadow-xs);
+}
+
+.evidence-search-input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-main);
+  outline: none;
+}
+
+.evidence-search-input::placeholder {
+  color: var(--text-soft);
+}
+
+.evidence-search-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
+  height: 44px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 999px;
+  background: #dbe7ff;
+  color: #256dec;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.evidence-search-btn:hover {
+  background: #cfe0ff;
+}
+
+.evidence-search-history {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.evidence-search-history-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--text-title);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-xs);
+  cursor: pointer;
+}
+
+.evidence-search-history-btn:hover,
+.evidence-search-history-btn[aria-expanded="true"] {
+  background: #eef5ff;
+  color: var(--primary);
+}
+
+.main-inner.is-evidence-results {
+  gap: 20px;
+}
+
+.evidence-results-actions {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.evidence-metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.evidence-cdr-card {
+  padding: 16px 16px 8px;
+}
+
+.evidence-cdr-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.evidence-cdr-lede {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--text-sub);
+}
+
+.evidence-cdr-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.evidence-filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.evidence-filter-sender {
+  min-width: 200px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.evidence-filter-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-sub);
+}
+
+.evidence-filter-select,
+.evidence-filter-input {
+  height: 36px;
+  border: 1px solid var(--stroke);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0 12px;
+  font-size: 14px;
+  color: var(--text-title);
+}
+
+.evidence-filter-input::placeholder {
+  color: var(--text-soft, #8b919c);
+}
+
+.evidence-cdr-empty {
+  margin: 0;
+  padding: 32px 12px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+.evidence-cdr-wrap {
+  max-height: min(640px, calc(100vh - 340px));
+  overflow: auto;
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+}
+
+.evidence-cdr-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.9fr) minmax(120px, 1fr) minmax(160px, 1.2fr) minmax(110px, 0.8fr);
+  gap: 12px;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 12px;
+  background: #fff;
+  border-bottom: 1px solid var(--stroke);
+}
+
+.evidence-cdr-row.trow:last-child {
+  border-bottom: none;
+}
+
+.evidence-cdr-row.is-head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  min-height: 44px;
+  background: var(--bg-weak);
+  border-bottom: 1px solid var(--stroke);
+  border-radius: 0;
+}
+
+.evidence-cdr-row.is-head .th {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-sub);
+}
+
+.evidence-cdr-ref {
+  font-variant-numeric: tabular-nums;
+  font-weight: 550;
+}
+
+.evidence-cdr-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 550;
+}
+
+.evidence-cdr-tag.is-clean {
+  background: #ecfdf3;
+  color: #067647;
+}
+
+.evidence-cdr-tag.is-spam {
+  background: #fffaeb;
+  color: #b54708;
+}
+
+.evidence-cdr-tag.is-scam {
+  background: #fef3f2;
+  color: #b42318;
+}
+
+@media (max-width: 900px) {
+  .evidence-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .result-header .evidence-results-actions {
+    margin-left: 52px;
+    width: 100%;
+  }
+}
+
 .insights-reports-card {
   padding: 16px 16px 8px;
 }

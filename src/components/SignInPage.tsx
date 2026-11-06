@@ -1,7 +1,22 @@
-import { useState, type FormEvent, type MouseEvent } from "react";
+import { useEffect, useState, type FormEvent, type MouseEvent } from "react";
 import { landingAssets as a } from "../landingAssets";
 import { navigateTo } from "../navigate";
 import "../signin.css";
+
+const TICKER_BASE = {
+  scammers: 45_000_001,
+  ctas: 1_005_001,
+  usersMn: 30,
+} as const;
+const TICKER_PER_MIN = {
+  scammers: 2,
+  ctas: 1,
+  usersMn: 1,
+} as const;
+
+function formatCount(value: number) {
+  return value.toLocaleString("en-US");
+}
 
 function openLanding(event: MouseEvent<HTMLAnchorElement>) {
   if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
@@ -14,6 +29,21 @@ export function SignInPage() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+  const [ticker, setTicker] = useState(() => ({ ...TICKER_BASE }));
+  const [tickKey, setTickKey] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setTicker((current) => ({
+        scammers: current.scammers + TICKER_PER_MIN.scammers,
+        ctas: current.ctas + TICKER_PER_MIN.ctas,
+        usersMn: current.usersMn + TICKER_PER_MIN.usersMn,
+      }));
+      setTickKey((key) => key + 1);
+    }, 60_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -35,7 +65,8 @@ export function SignInPage() {
           <span className="sign-kicker">Threat Intelligence</span>
         </a>
         <div className="sign-brand-copy">
-          <ul className="sign-props">
+          <p className="sign-props-heading">In the Last 60 mins</p>
+          <ul className="sign-props" aria-live="polite">
             <li>
               <span className="sign-prop-icon" aria-hidden="true">
                 <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -45,8 +76,10 @@ export function SignInPage() {
                 </svg>
               </span>
               <span className="sign-prop-copy">
-                <p className="sign-prop-value">1.3M+</p>
-                <p className="sign-prop-label">Threats detected</p>
+                <p className="sign-prop-value" key={`scammers-${tickKey}`}>
+                  {formatCount(ticker.scammers)}
+                </p>
+                <p className="sign-prop-label">Scammers detected</p>
               </span>
             </li>
             <li>
@@ -57,8 +90,10 @@ export function SignInPage() {
                 </svg>
               </span>
               <span className="sign-prop-copy">
-                <p className="sign-prop-value">&lt;5 min</p>
-                <p className="sign-prop-label">Detection time</p>
+                <p className="sign-prop-value" key={`ctas-${tickKey}`}>
+                  {formatCount(ticker.ctas)}
+                </p>
+                <p className="sign-prop-label">CTAs detected</p>
               </span>
             </li>
             <li>
@@ -71,7 +106,9 @@ export function SignInPage() {
                 </svg>
               </span>
               <span className="sign-prop-copy">
-                <p className="sign-prop-value">100M+</p>
+                <p className="sign-prop-value" key={`users-${tickKey}`}>
+                  {formatCount(ticker.usersMn)} Mn
+                </p>
                 <p className="sign-prop-label">Users protected</p>
               </span>
             </li>

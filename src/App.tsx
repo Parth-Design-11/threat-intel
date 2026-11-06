@@ -9,6 +9,7 @@ import { AccessKeysPage } from "./components/AccessKeysPage";
 import type { ApiTab } from "./components/ApiTabs";
 import { AddUserModal } from "./components/AddUserModal";
 import { CreateKeyModal } from "./components/CreateKeyModal";
+import { EvidencePage } from "./components/EvidencePage";
 import { ExplorePage } from "./components/ExplorePage";
 import { InsightsPage } from "./components/InsightsPage";
 import { KeyCreatedModal } from "./components/KeyCreatedModal";
@@ -80,6 +81,7 @@ export default function App() {
             />
           ) : null}
           {viewSection === "explore" ? <ExplorePage /> : null}
+          {viewSection === "evidence" ? <EvidencePage /> : null}
           {viewSection === "reports" ? <ReportsPage exports={reportExports} /> : null}
           {viewSection === "settings" ? (
             <SettingsPage
