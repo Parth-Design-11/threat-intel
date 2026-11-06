@@ -3,16 +3,18 @@ import { landingAssets as a } from "../landingAssets";
 import { navigateTo } from "../navigate";
 import "../signin.css";
 
-const TICKER_BASE = {
+type TickerCounts = { scammers: number; ctas: number; usersMn: number };
+
+const TICKER_BASE: TickerCounts = {
   scammers: 45_000_001,
   ctas: 1_005_001,
   usersMn: 30,
-} as const;
-const TICKER_PER_MIN = {
+};
+const TICKER_PER_MIN: TickerCounts = {
   scammers: 2,
   ctas: 1,
   usersMn: 1,
-} as const;
+};
 
 function formatCount(value: number) {
   return value.toLocaleString("en-US");
