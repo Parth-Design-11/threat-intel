@@ -3456,8 +3456,14 @@ img {
   background: transparent;
   box-shadow: none;
   align-items: center;
-  gap: 0;
+  gap: 10px;
   overflow: visible;
+}
+
+.threat-meter-chip.is-below {
+  margin-top: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .threat-score-label {
@@ -5064,6 +5070,34 @@ img {
 .evidence-results-actions {
   margin-left: auto;
   flex-shrink: 0;
+}
+
+.evidence-exposure.profile-layout {
+  flex: none;
+  overflow: visible;
+  align-items: stretch;
+}
+
+.evidence-exposure .profile-risk-col {
+  position: static;
+  align-self: stretch;
+  height: 100%;
+  max-height: none;
+  display: flex;
+}
+
+.evidence-exposure .profile-card.is-gauge {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+}
+
+.evidence-exposure .b-party-gauge {
+  flex: 1;
+  align-items: center;
 }
 
 .evidence-metrics {

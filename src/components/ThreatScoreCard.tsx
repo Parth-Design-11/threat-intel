@@ -46,11 +46,12 @@ export function ThreatScoreCard({
             </div>
             <div className="threat-meter-readout">
               <p className="threat-meter-score">{score}</p>
-              <span className="threat-meter-chip">{label}</span>
+              {bare ? null : <span className="threat-meter-chip">{label}</span>}
             </div>
           </div>
         </div>
       </div>
+      {bare ? <span className="threat-meter-chip is-below">{label}</span> : null}
     </article>
   );
 }

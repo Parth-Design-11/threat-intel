@@ -9,8 +9,14 @@ import {
   type EvidenceDatePreset,
   type EvidenceIdentifiedAs,
 } from "../evidenceData";
-import { maskIdentifier } from "../exploreData";
+import {
+  B_PARTY_PROFILE,
+  B_PARTY_PROFILE_NO_EVIDENCE,
+  maskIdentifier,
+  resolveBPartyResultState,
+} from "../exploreData";
 import { addExploreHistory, getExploreHistory, type ExploreHistoryEntry } from "../exploreHistory";
+import { BPartyExposureSummary } from "./BPartyExposureSummary";
 import { formatDateRange, InsightsDateRange, type DateRange } from "./InsightsDateRange";
 
 const DATE_PRESETS: { id: EvidenceDatePreset; label: string }[] = [
@@ -199,6 +205,11 @@ function EvidenceResults({ query, metrics, rows, onBack }: EvidenceResultsProps)
   const [range, setRange] = useState<DateRange>(() => rangeForPreset("30"));
   const [status, setStatus] = useState<"all" | EvidenceIdentifiedAs>("all");
   const [senderQuery, setSenderQuery] = useState("");
+  const vulnerabilityState = resolveBPartyResultState(query);
+  const exposureProfile =
+    vulnerabilityState === "no-evidence" || vulnerabilityState === "zero"
+      ? B_PARTY_PROFILE_NO_EVIDENCE
+      : B_PARTY_PROFILE;
 
   const filteredRows = useMemo(
     () =>
@@ -249,6 +260,10 @@ function EvidenceResults({ query, metrics, rows, onBack }: EvidenceResultsProps)
           </div>
         </article>
       </section>
+
+      {vulnerabilityState === "zero" ? null : (
+        <BPartyExposureSummary profile={exposureProfile} className="evidence-exposure" />
+      )}
 
       <section className="table-card insights-table-card evidence-cdr-card" aria-label="CDR logs">
         <div className="evidence-cdr-head">
