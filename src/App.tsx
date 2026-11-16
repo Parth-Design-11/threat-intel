@@ -53,8 +53,8 @@ export default function App() {
     const id = `cdr-${Date.now()}`;
     const pending: ReportExport = {
       id,
-      name: `CDR · ${periodLabel}`,
-      type: "CDR",
+      name: `Report · ${periodLabel}`,
+      type: "Report",
       status: "preparing",
       createdAt: formatExportStamp(),
       createdBy: "You",

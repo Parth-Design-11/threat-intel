@@ -77,7 +77,7 @@ export function InsightsPage({
         <div className="insights-actions">
           <InsightsDateRange value={range} onChange={setRange} />
           <button type="button" className="btn-cancel" onClick={requestCdrExport}>
-            Download CDR
+            Download Report
           </button>
         </div>
       </div>

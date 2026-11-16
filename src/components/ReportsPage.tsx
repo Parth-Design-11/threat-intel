@@ -18,7 +18,7 @@ function downloadStubReport(report: ReportExport) {
     `Created: ${report.createdAt}`,
     `Created by: ${report.createdBy}`,
     "",
-    "Prototype stub — replace with live CDR file when API is connected.",
+    "Prototype stub — replace with live report file when API is connected.",
   ].join("\n");
   const blob = new Blob([body], { type: "text/plain;charset=utf-8" });
   const url = URL.createObjectURL(blob);
@@ -38,7 +38,7 @@ export function ReportsPage({ exports }: ReportsPageProps) {
         <div>
           <h1 className="page-title">Reports</h1>
           <p className="insights-subtitle">
-            CDR and summary exports prepared for your team. Ready files can be downloaded here.
+            Report and summary exports prepared for your team. Ready files can be downloaded here.
           </p>
         </div>
       </div>
