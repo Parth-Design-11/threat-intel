@@ -2,12 +2,19 @@ import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { assets } from "../assets";
 import {
   filterEvidenceCdrLogs,
+  pairHasEvidence,
   rangeForPreset,
+  resolveEvidenceBatch,
   resolveEvidenceCdrLogs,
   resolveEvidenceMetrics,
+  resolveEvidencePairCdrLogs,
+  resolveEvidencePairMetrics,
+  SAMPLE_EVIDENCE_PAIRS,
+  type EvidenceBatchRow,
   type EvidenceCdrRow,
   type EvidenceDatePreset,
   type EvidenceIdentifiedAs,
+  type EvidencePartyPair,
 } from "../evidenceData";
 import {
   B_PARTY_PROFILE,
@@ -17,7 +24,10 @@ import {
 } from "../exploreData";
 import { addExploreHistory, getExploreHistory, type ExploreHistoryEntry } from "../exploreHistory";
 import { BPartyExposureSummary } from "./BPartyExposureSummary";
+import { EvidenceCdrCurtain, type EvidenceCdrReviewDecision } from "./EvidenceCdrCurtain";
 import { formatDateRange, InsightsDateRange, type DateRange } from "./InsightsDateRange";
+
+type EvidenceLandingTab = "single" | "upload";
 
 const DATE_PRESETS: { id: EvidenceDatePreset; label: string }[] = [
   { id: "7", label: "Last 7 days" },
@@ -31,6 +41,11 @@ const STATUS_OPTIONS: { id: "all" | EvidenceIdentifiedAs; label: string }[] = [
   { id: "Clean", label: "Clean" },
   { id: "Spam", label: "Spam" },
   { id: "Scam", label: "Scam" },
+];
+
+const LANDING_TABS: { id: EvidenceLandingTab; label: string }[] = [
+  { id: "single", label: "Single phone number" },
+  { id: "upload", label: "Upload" },
 ];
 
 function formatHistoryTime(timestamp: number) {
@@ -62,9 +77,13 @@ function HistoryIcon() {
 }
 
 export function EvidencePage() {
+  const [landingTab, setLandingTab] = useState<EvidenceLandingTab>("single");
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState<string | null>(null);
+  const [selectedPair, setSelectedPair] = useState<EvidencePartyPair | null>(null);
+  const [batchRows, setBatchRows] = useState<EvidenceBatchRow[] | null>(null);
+  const [batchFileName, setBatchFileName] = useState("");
   const [historyOpen, setHistoryOpen] = useState(false);
   const [history, setHistory] = useState<ExploreHistoryEntry[]>(() => getExploreHistory("evidence"));
   const historyRef = useRef<HTMLDivElement>(null);
@@ -102,12 +121,39 @@ export function EvidencePage() {
     addExploreHistory("evidence", trimmed);
     setHistory(getExploreHistory("evidence"));
     setHistoryOpen(false);
+    setBatchRows(null);
+    setSelectedPair(null);
     setSubmittedQuery(trimmed);
   }
 
   function submit(event?: FormEvent) {
     event?.preventDefault();
     runSearch(query);
+  }
+
+  function continueWithSampleFile() {
+    setError("");
+    setBatchFileName("sample-a-b-party.csv");
+    setSubmittedQuery(null);
+    setSelectedPair(null);
+    setBatchRows(resolveEvidenceBatch(SAMPLE_EVIDENCE_PAIRS));
+  }
+
+  if (selectedPair) {
+    const metrics = resolveEvidencePairMetrics(selectedPair.aParty, selectedPair.bParty);
+    const rows = resolveEvidencePairCdrLogs(selectedPair.aParty, selectedPair.bParty);
+    return (
+      <EvidenceResults
+        query={selectedPair.bParty}
+        aParty={selectedPair.aParty}
+        bParty={selectedPair.bParty}
+        metrics={metrics}
+        rows={rows}
+        allowReview
+        onBack={() => setSelectedPair(null)}
+        backLabel="Back to upload results"
+      />
+    );
   }
 
   if (submittedQuery) {
@@ -118,7 +164,28 @@ export function EvidencePage() {
         query={submittedQuery}
         metrics={metrics}
         rows={rows}
-        onBack={() => setSubmittedQuery(null)}
+        onBack={() => {
+          setSubmittedQuery(null);
+          setLandingTab("single");
+        }}
+        backLabel="Back to search"
+      />
+    );
+  }
+
+  if (batchRows) {
+    return (
+      <EvidenceBatchResults
+        fileName={batchFileName}
+        rows={batchRows}
+        onBack={() => {
+          setBatchRows(null);
+          setLandingTab("upload");
+        }}
+        onOpenPair={(pair) => {
+          if (!pairHasEvidence(pair.aParty, pair.bParty)) return;
+          setSelectedPair(pair);
+        }}
       />
     );
   }
@@ -128,66 +195,201 @@ export function EvidencePage() {
       <section className="explore-landing evidence-landing">
         <div className="explore-heading">
           <h1 className="page-title">Evidence</h1>
-          <p className="explore-lede">Look up inbound message evidence against a phone number.</p>
+          <p className="explore-lede">
+            {landingTab === "single"
+              ? "Look up inbound message evidence against a phone number."
+              : "Load a sample A-party / B-party file and continue to combination results."}
+          </p>
         </div>
 
-        <form className="evidence-search" onSubmit={submit}>
-          <div className="evidence-search-shell">
-            <input
-              className="evidence-search-input"
-              value={query}
-              onChange={(event) => {
-                setQuery(event.target.value);
-                if (error) setError("");
-              }}
-              placeholder="Enter phone number"
-              aria-label="Phone number"
-              aria-invalid={Boolean(error)}
-            />
-            <button type="submit" className="evidence-search-btn">
-              Search
-            </button>
-          </div>
-
-          <div className="evidence-search-history" ref={historyRef}>
+        <div className="tabs evidence-landing-tabs" role="tablist" aria-label="Evidence lookup mode">
+          {LANDING_TABS.map((tab) => (
             <button
+              key={tab.id}
               type="button"
-              className="evidence-search-history-btn"
-              aria-label="Recent searches"
-              aria-expanded={historyOpen}
-              aria-haspopup="listbox"
-              onClick={() => setHistoryOpen((open) => !open)}
+              role="tab"
+              aria-selected={landingTab === tab.id}
+              className={`tab${landingTab === tab.id ? " is-active" : ""}`}
+              onClick={() => {
+                setLandingTab(tab.id);
+                setError("");
+              }}
             >
-              <HistoryIcon />
+              {tab.label}
             </button>
-            {historyOpen ? (
-              <div className="explore-history-menu" role="listbox" aria-label="Recent searches">
-                {history.length === 0 ? (
-                  <p className="explore-history-empty">No recent searches</p>
-                ) : (
-                  history.map((entry) => (
-                    <button
-                      key={`${entry.query}-${entry.searchedAt}`}
-                      type="button"
-                      role="option"
-                      className="explore-history-item"
-                      onClick={() => runSearch(entry.query)}
-                    >
-                      <span className="explore-history-query" title={entry.query}>
-                        {entry.query}
-                      </span>
-                      <span className="explore-history-time">
-                        {formatHistoryTime(entry.searchedAt)}
-                      </span>
-                    </button>
-                  ))
-                )}
-              </div>
-            ) : null}
+          ))}
+        </div>
+
+        {landingTab === "single" ? (
+          <form className="evidence-search" onSubmit={submit}>
+            <div className="evidence-search-shell">
+              <input
+                className="evidence-search-input"
+                value={query}
+                onChange={(event) => {
+                  setQuery(event.target.value);
+                  if (error) setError("");
+                }}
+                placeholder="Enter phone number"
+                aria-label="Phone number"
+                aria-invalid={Boolean(error)}
+              />
+              <button type="submit" className="evidence-search-btn">
+                Search
+              </button>
+            </div>
+
+            <div className="evidence-search-history" ref={historyRef}>
+              <button
+                type="button"
+                className="evidence-search-history-btn"
+                aria-label="Recent searches"
+                aria-expanded={historyOpen}
+                aria-haspopup="listbox"
+                onClick={() => setHistoryOpen((open) => !open)}
+              >
+                <HistoryIcon />
+              </button>
+              {historyOpen ? (
+                <div className="explore-history-menu" role="listbox" aria-label="Recent searches">
+                  {history.length === 0 ? (
+                    <p className="explore-history-empty">No recent searches</p>
+                  ) : (
+                    history.map((entry) => (
+                      <button
+                        key={`${entry.query}-${entry.searchedAt}`}
+                        type="button"
+                        role="option"
+                        className="explore-history-item"
+                        onClick={() => runSearch(entry.query)}
+                      >
+                        <span className="explore-history-query" title={entry.query}>
+                          {entry.query}
+                        </span>
+                        <span className="explore-history-time">
+                          {formatHistoryTime(entry.searchedAt)}
+                        </span>
+                      </button>
+                    ))
+                  )}
+                </div>
+              ) : null}
+            </div>
+          </form>
+        ) : (
+          <div className="evidence-upload">
+            <button type="button" className="evidence-upload-drop" onClick={continueWithSampleFile}>
+              <strong>Upload sample file and continue</strong>
+              <span>Loads demo A-party → B-party combinations and opens results.</span>
+            </button>
+            <p className="evidence-upload-hint">
+              Sample includes sender (A-party) and receiver (B-party) pairs for review.
+            </p>
           </div>
-        </form>
+        )}
 
         {error ? <p className="explore-error">{error}</p> : null}
+      </section>
+    </div>
+  );
+}
+
+type EvidenceBatchResultsProps = {
+  fileName: string;
+  rows: EvidenceBatchRow[];
+  onBack: () => void;
+  onOpenPair: (pair: EvidencePartyPair) => void;
+};
+
+function EvidenceBatchResults({ fileName, rows, onBack, onOpenPair }: EvidenceBatchResultsProps) {
+  const withEvidence = rows.filter((row) => row.status === "has-evidence");
+  const withoutEvidence = rows.length - withEvidence.length;
+
+  return (
+    <div className="main-inner is-evidence is-evidence-results">
+      <header className="result-header">
+        <button type="button" className="result-back" onClick={onBack} aria-label="Back to upload">
+          <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
+        </button>
+        <div className="result-heading">
+          <h1 className="result-title">Upload results</h1>
+          <p className="result-meta">
+            {fileName || "A/B party list"} · {rows.length.toLocaleString()} combinations scanned
+          </p>
+        </div>
+      </header>
+
+      <section className="metrics insights-metrics evidence-metrics evidence-batch-metrics" aria-label="Batch evidence summary">
+        <article className="metric-card">
+          <p className="metric-label">Combinations uploaded</p>
+          <div className="metric-row">
+            <p className="metric-value">{rows.length.toLocaleString()}</p>
+          </div>
+        </article>
+        <article className="metric-card">
+          <p className="metric-label">Evidence available</p>
+          <div className="metric-row">
+            <p className="metric-value">{withEvidence.length.toLocaleString()}</p>
+          </div>
+        </article>
+        <article className="metric-card">
+          <p className="metric-label">No evidence</p>
+          <div className="metric-row">
+            <p className="metric-value">{withoutEvidence.toLocaleString()}</p>
+          </div>
+        </article>
+      </section>
+
+      <section className="table-card insights-table-card evidence-cdr-card" aria-label="Uploaded A/B party pairs">
+        <div className="evidence-cdr-head">
+          <div>
+            <h2 className="insights-card-title is-table">Combination coverage</h2>
+            <p className="evidence-cdr-lede">
+              Evidence found for {withEvidence.length.toLocaleString()} of {rows.length.toLocaleString()}{" "}
+              A-party → B-party combinations. Open a pair with evidence to review its CDR logs.
+            </p>
+          </div>
+        </div>
+
+        <div className="table-wrap evidence-cdr-wrap">
+          <div className="thead evidence-batch-row is-head">
+            <div className="th">A-party</div>
+            <div className="th">B-party</div>
+            <div className="th">Status</div>
+            <div className="th">Messages</div>
+            <div className="th">Scam</div>
+            <div className="th is-expand" aria-hidden="true" />
+          </div>
+          {rows.map((row) => {
+            const canOpen = row.status === "has-evidence";
+            return (
+              <button
+                key={row.id}
+                type="button"
+                className={`trow evidence-batch-row is-toggle${canOpen ? "" : " is-disabled"}`}
+                disabled={!canOpen}
+                onClick={() => onOpenPair({ aParty: row.aParty, bParty: row.bParty })}
+              >
+                <div className="td evidence-cdr-ref" title={row.aParty}>
+                  {row.aDisplay}
+                </div>
+                <div className="td evidence-cdr-ref" title={row.bParty}>
+                  {row.bDisplay}
+                </div>
+                <div className="td">
+                  <span className={`evidence-cdr-tag is-${canOpen ? "clean" : "spam"}`}>
+                    {canOpen ? "Evidence available" : "No evidence"}
+                  </span>
+                </div>
+                <div className="td">{row.messageCount}</div>
+                <div className="td">{row.scamCount}</div>
+                <div className="td is-expand" aria-hidden="true">
+                  <span className="evidence-cdr-chevron">{canOpen ? "›" : ""}</span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </section>
     </div>
   );
@@ -198,13 +400,28 @@ type EvidenceResultsProps = {
   metrics: ReturnType<typeof resolveEvidenceMetrics>;
   rows: EvidenceCdrRow[];
   onBack: () => void;
+  backLabel?: string;
+  allowReview?: boolean;
+  aParty?: string;
+  bParty?: string;
 };
 
-function EvidenceResults({ query, metrics, rows, onBack }: EvidenceResultsProps) {
+function EvidenceResults({
+  query,
+  metrics,
+  rows,
+  onBack,
+  backLabel = "Back to search",
+  allowReview = false,
+  aParty,
+  bParty,
+}: EvidenceResultsProps) {
   const [datePreset, setDatePreset] = useState<EvidenceDatePreset>("30");
   const [range, setRange] = useState<DateRange>(() => rangeForPreset("30"));
   const [status, setStatus] = useState<"all" | EvidenceIdentifiedAs>("all");
   const [senderQuery, setSenderQuery] = useState("");
+  const [selectedRow, setSelectedRow] = useState<EvidenceCdrRow | null>(null);
+  const [reviewById, setReviewById] = useState<Record<string, EvidenceCdrReviewDecision>>({});
   const vulnerabilityState = resolveBPartyResultState(query);
   const exposureProfile =
     vulnerabilityState === "no-evidence" || vulnerabilityState === "zero"
@@ -231,18 +448,26 @@ function EvidenceResults({ query, metrics, rows, onBack }: EvidenceResultsProps)
   return (
     <div className="main-inner is-evidence is-evidence-results">
       <header className="result-header">
-        <button type="button" className="result-back" onClick={onBack} aria-label="Back to search">
+        <button type="button" className="result-back" onClick={onBack} aria-label={backLabel}>
           <img src={assets.iconArrowLeft} alt="" width={6} height={10} />
         </button>
         <div className="result-heading">
-          <h1 className="result-title">{maskIdentifier(query)}</h1>
-          <p className="result-meta">Evidence · {formatDateRange(range)}</p>
+          <h1 className="result-title">
+            {aParty && bParty
+              ? `${maskIdentifier(aParty)} → ${maskIdentifier(bParty)}`
+              : maskIdentifier(query)}
+          </h1>
+          <p className="result-meta">
+            {aParty && bParty ? "A-party → B-party evidence" : "Evidence"} · {formatDateRange(range)}
+          </p>
         </div>
       </header>
 
       <section className="metrics insights-metrics evidence-metrics" aria-label="Evidence summary">
         <article className="metric-card">
-          <p className="metric-label">Total Messages received</p>
+          <p className="metric-label">
+            {aParty && bParty ? "Messages for this pair" : "Total Messages received"}
+          </p>
           <div className="metric-row">
             <p className="metric-value">{metrics.totalMessages}</p>
           </div>
@@ -261,16 +486,20 @@ function EvidenceResults({ query, metrics, rows, onBack }: EvidenceResultsProps)
         </article>
       </section>
 
-      {vulnerabilityState === "zero" ? null : (
+      {!aParty && vulnerabilityState !== "zero" ? (
         <BPartyExposureSummary profile={exposureProfile} className="evidence-exposure" />
-      )}
+      ) : null}
 
       <section className="table-card insights-table-card evidence-cdr-card" aria-label="CDR logs">
         <div className="evidence-cdr-head">
           <div>
-            <h2 className="insights-card-title is-table">Latest 100 CDR logs</h2>
+            <h2 className="insights-card-title is-table">
+              {aParty && bParty ? "CDR logs for this combination" : "Latest 100 CDR logs"}
+            </h2>
             <p className="evidence-cdr-lede">
-              Showing {filteredRows.length} of {rows.length} inbound messages for this number.
+              {aParty && bParty
+                ? `Showing ${filteredRows.length} of ${rows.length} messages from this A-party to this B-party.`
+                : `Showing ${filteredRows.length} of ${rows.length} inbound messages for this number.`}
             </p>
           </div>
         </div>
@@ -336,25 +565,56 @@ function EvidenceResults({ query, metrics, rows, onBack }: EvidenceResultsProps)
             <div className="th">Sender</div>
             <div className="th">Time Stamp</div>
             <div className="th">Identified As</div>
+            <div className="th is-expand" aria-hidden="true" />
           </div>
           {filteredRows.length === 0 ? (
             <p className="evidence-cdr-empty">No CDR logs match these filters.</p>
           ) : (
-            filteredRows.map((row) => (
-              <div key={row.id} className="trow evidence-cdr-row">
-                <div className="td evidence-cdr-ref">{row.referenceId}</div>
-                <div className="td">{row.sender}</div>
-                <div className="td">{row.timestamp}</div>
-                <div className="td">
-                  <span className={`evidence-cdr-tag is-${row.identifiedAs.toLowerCase()}`}>
-                    {row.identifiedAs}
-                  </span>
-                </div>
-              </div>
-            ))
+            filteredRows.map((row) => {
+              const selected = selectedRow?.id === row.id;
+              const decision = reviewById[row.id];
+              return (
+                <button
+                  key={row.id}
+                  type="button"
+                  className={`trow evidence-cdr-row is-toggle${selected ? " is-selected" : ""}`}
+                  aria-pressed={selected}
+                  onClick={() => setSelectedRow(row)}
+                >
+                  <div className="td evidence-cdr-ref">{row.referenceId}</div>
+                  <div className="td">{row.sender}</div>
+                  <div className="td">{row.timestamp}</div>
+                  <div className="td">
+                    <span className={`evidence-cdr-tag is-${row.identifiedAs.toLowerCase()}`}>
+                      {row.identifiedAs}
+                    </span>
+                    {decision ? (
+                      <span className={`evidence-cdr-review-chip is-${decision}`}>
+                        {decision === "approved" ? "Approved" : "Rejected"}
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="td is-expand" aria-hidden="true">
+                    <span className="evidence-cdr-chevron">›</span>
+                  </div>
+                </button>
+              );
+            })
           )}
         </div>
       </section>
+
+      {selectedRow ? (
+        <EvidenceCdrCurtain
+          row={selectedRow}
+          onClose={() => setSelectedRow(null)}
+          showReviewActions={allowReview}
+          reviewDecision={reviewById[selectedRow.id] ?? null}
+          onReview={(decision) => {
+            setReviewById((current) => ({ ...current, [selectedRow.id]: decision }));
+          }}
+        />
+      ) : null}
     </div>
   );
 }
