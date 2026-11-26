@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { assets } from "../assets";
-import { resolveBPartyResultState, resolveCtaResultState, resolvePhoneResultState } from "../exploreData";
+import { resolveCtaResultState, resolvePhoneResultState } from "../exploreData";
 import { addExploreHistory, getExploreHistory, type ExploreHistoryEntry } from "../exploreHistory";
 import { useDevOverride } from "../devtools";
 import { APartyProfileResult } from "./APartyProfileResult";
 import { APartyResult } from "./APartyResult";
-import { BPartyProfileResult } from "./BPartyProfileResult";
 import { CtaResult } from "./CtaResult";
 import { RiskSearchLoader } from "./RiskSearchLoader";
 import { MessagePatternDetail } from "./MessagePatternDetail";
 import { MessagePatternsList } from "./MessagePatternsList";
-import type { PartyMode } from "./PartyModeToggle";
 
 export const EXPLORE_TYPES = ["risk-score", "message-patterns", "cta"] as const;
 export type ExploreType = (typeof EXPLORE_TYPES)[number];
@@ -67,7 +65,6 @@ function HistoryIcon() {
 
 export function ExplorePage() {
   const [type, setType] = useState<ExploreType>("risk-score");
-  const [partyMode, setPartyMode] = useState<PartyMode>("risk");
   const [query, setQuery] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [numberLoading, setNumberLoading] = useState(false);
@@ -86,7 +83,6 @@ export function ExplorePage() {
     setSubmitted(false);
     setNumberLoading(false);
     setError("");
-    setPartyMode("risk");
   }, [type]);
 
   useEffect(() => {
@@ -137,41 +133,22 @@ export function ExplorePage() {
     runSearch(entry.query);
   }
 
-  function changePartyMode(mode: PartyMode) {
-    if (mode === partyMode) return;
-    setPartyMode(mode);
-  }
-
   const aParty = useDevOverride(
     "explore.aParty",
-    type === "risk-score" && submitted && partyMode === "risk" ? resolvePhoneResultState(query) : null,
+    type === "risk-score" && submitted ? resolvePhoneResultState(query) : null,
   );
   const aPartyLayout = useDevOverride<"current" | "profile">("explore.aParty.layout", "profile");
-  const bParty = useDevOverride(
-    "explore.bParty",
-    type === "risk-score" && submitted && partyMode === "vulnerability"
-      ? resolveBPartyResultState(query)
-      : null,
-  );
   const cta = useDevOverride(
     "explore.cta",
     type === "cta" && submitted ? resolveCtaResultState(query) : null,
   );
 
-  // DevTools B-Party scenarios force a result while mode may still be Risk — align the toggle.
-  useEffect(() => {
-    if (type === "risk-score" && bParty && !aParty && partyMode !== "vulnerability") {
-      setPartyMode("vulnerability");
-    }
-  }, [type, bParty, aParty, partyMode]);
-
   if (numberLoading) {
-    const isVulnerability = partyMode === "vulnerability";
     return (
       <RiskSearchLoader
         query={query.trim() || "+919876543210"}
-        profileMeta={isVulnerability ? "Receiver vulnerability" : "Sender profile"}
-        scorePhaseLabel={isVulnerability ? "Calculating Vulnerability score" : "Calculating Risk score"}
+        profileMeta="Sender profile"
+        scorePhaseLabel="Calculating Risk score"
         onDone={() => setNumberLoading(false)}
         onBack={() => {
           setNumberLoading(false);
@@ -181,40 +158,15 @@ export function ExplorePage() {
     );
   }
 
-  if (partyMode === "vulnerability" && bParty) {
-    return (
-      <BPartyProfileResult
-        query={query.trim() || "+919876543210"}
-        onBack={() => setSubmitted(false)}
-        partyMode={partyMode}
-        onPartyModeChange={changePartyMode}
-      />
-    );
-  }
-
-  if (partyMode === "risk" && aParty) {
+  if (aParty) {
     const resultProps = {
       query: query.trim() || "+919876543210",
       onBack: () => setSubmitted(false),
-      partyMode,
-      onPartyModeChange: changePartyMode,
     };
     return aPartyLayout === "profile" ? (
       <APartyProfileResult {...resultProps} />
     ) : (
       <APartyResult {...resultProps} />
-    );
-  }
-
-  // DevTools: forced B-Party override before mode has flipped via the effect above
-  if (bParty) {
-    return (
-      <BPartyProfileResult
-        query={query.trim() || "+919876543210"}
-        onBack={() => setSubmitted(false)}
-        partyMode="vulnerability"
-        onPartyModeChange={changePartyMode}
-      />
     );
   }
 

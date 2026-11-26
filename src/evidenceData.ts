@@ -202,15 +202,13 @@ export function filterEvidenceCdrLogs(
   rows: EvidenceCdrRow[],
   options: {
     range: { start: string; end: string };
-    status: "all" | EvidenceIdentifiedAs;
-    senderQuery: string;
+    status: "all" | Exclude<EvidenceIdentifiedAs, "Clean">;
   },
 ) {
-  const senderNeedle = options.senderQuery.trim().toLowerCase();
   return rows.filter((row) => {
+    if (row.identifiedAs === "Clean") return false;
     if (row.timestampIso < options.range.start || row.timestampIso > options.range.end) return false;
     if (options.status !== "all" && row.identifiedAs !== options.status) return false;
-    if (senderNeedle && !row.sender.toLowerCase().includes(senderNeedle)) return false;
     return true;
   });
 }
@@ -223,6 +221,17 @@ export type EvidencePartyPair = {
 };
 
 /** Demo A-party / B-party pairs used by “Upload sample file and continue”. */
+export const SAMPLE_EVIDENCE_NUMBERS: string[] = [
+  "9876543210",
+  "9123456780",
+  "9988776655",
+  "9000000000",
+  "9876501234",
+  "9999999999",
+  "9812345678",
+  "9765432109",
+];
+
 export const SAMPLE_EVIDENCE_PAIRS: EvidencePartyPair[] = [
   { aParty: "+6281234567890", bParty: "9876543210" },
   { aParty: "+6281987654321", bParty: "9123456780" },
@@ -245,11 +254,75 @@ export type EvidenceBatchRow = {
   scamCount: string;
 };
 
+export type EvidenceNumberBatchRow = {
+  id: string;
+  number: string;
+  display: string;
+  status: EvidenceBatchStatus;
+  messageCount: string;
+  scamCount: string;
+};
+
 function normalizePhoneToken(value: string): string | null {
   const trimmed = value.trim();
   const digits = trimmed.replace(/\D/g, "");
   if (digits.length < 8 || digits.length > 15) return null;
   return trimmed.startsWith("+") ? `+${digits}` : digits;
+}
+
+/** Parse one phone number per line (or single-column CSV). */
+export function parseEvidencePhoneNumbers(raw: string): string[] {
+  const seen = new Set<string>();
+  const numbers: string[] = [];
+  const lines = raw.split(/\r?\n/);
+
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    const cells = trimmed.includes("\t")
+      ? trimmed.split("\t")
+      : trimmed.split(/[,;|]/).map((cell) => cell.trim());
+
+    const cell = cells[0] ?? trimmed;
+    if (/^(msisdn|phone|number|b[\s_-]*party|receiver)/i.test(cell) && cells.length === 1) {
+      continue;
+    }
+    if (
+      cells.length >= 2 &&
+      /msisdn|phone|number|b[\s_-]*party|receiver/i.test(cell) &&
+      !normalizePhoneToken(cells[1] ?? "")
+    ) {
+      continue;
+    }
+
+    const token = normalizePhoneToken(cells.length === 1 ? trimmed : cell);
+    if (!token || seen.has(token)) continue;
+    seen.add(token);
+    numbers.push(token);
+  }
+
+  return numbers;
+}
+
+export function numberHasEvidence(number: string): boolean {
+  const state = resolveBPartyResultState(number);
+  return state !== "zero";
+}
+
+export function resolveEvidenceNumberBatch(numbers: string[]): EvidenceNumberBatchRow[] {
+  return numbers.map((number, index) => {
+    const hasEvidence = numberHasEvidence(number);
+    const metrics = hasEvidence ? resolveEvidenceMetrics(number) : { totalMessages: "0", spamMessages: "0", scamMessages: "0" };
+    return {
+      id: `number-batch-${index}-${number}`,
+      number,
+      display: maskIdentifier(number),
+      status: hasEvidence ? "has-evidence" : "no-evidence",
+      messageCount: metrics.totalMessages,
+      scamCount: metrics.scamMessages,
+    };
+  });
 }
 
 /** Parse A-party / B-party pairs from CSV or TXT (two columns per row). */

@@ -9,15 +9,12 @@ import {
   type ProfileMetric,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
-import type { PartyMode } from "./PartyModeToggle";
 import { ResultPartyHeader } from "./ResultPartyHeader";
 import { RiskSpiderChart } from "./RiskSpiderChart";
 
 type APartyProfileResultProps = {
   query: string;
   onBack: () => void;
-  partyMode: PartyMode;
-  onPartyModeChange: (mode: PartyMode) => void;
 };
 
 function AlertGlyph() {
@@ -98,12 +95,7 @@ function Section({
   );
 }
 
-export function APartyProfileResult({
-  query,
-  onBack,
-  partyMode,
-  onPartyModeChange,
-}: APartyProfileResultProps) {
+export function APartyProfileResult({ query, onBack }: APartyProfileResultProps) {
   const masked = maskIdentifier(query);
   const state = useDevOverride("explore.aParty", resolvePhoneResultState(query));
 
@@ -113,8 +105,6 @@ export function APartyProfileResult({
         <ResultPartyHeader
           title={masked}
           onBack={onBack}
-          partyMode={partyMode}
-          onPartyModeChange={onPartyModeChange}
           meta={
             <>
               <span className="result-meta-icon">
@@ -140,8 +130,6 @@ export function APartyProfileResult({
       <ResultPartyHeader
         title={masked}
         onBack={onBack}
-        partyMode={partyMode}
-        onPartyModeChange={onPartyModeChange}
         meta={
           <>
             <span className="result-meta-icon">

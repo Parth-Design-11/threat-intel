@@ -92,9 +92,9 @@ export const prototypeConfig: PrototypeConfig = {
     },
     {
       kind: "status",
-      id: "explore.bParty",
-      label: "B-Party result",
-      screen: "explore",
+      id: "evidence.bParty",
+      label: "B-Party vulnerability",
+      screen: "evidence",
       values: ["full", "zero", "no-evidence"],
     },
     {
@@ -152,17 +152,17 @@ export const prototypeConfig: PrototypeConfig = {
     {
       id: "b-party-empty",
       label: "B-Party: no intelligence",
-      set: { "app.section": "explore", "explore.bParty": "zero" },
+      set: { "app.section": "evidence", "evidence.bParty": "zero" },
     },
     {
       id: "b-party-no-evidence",
       label: "B-Party: no evidence",
-      set: { "app.section": "explore", "explore.bParty": "no-evidence" },
+      set: { "app.section": "evidence", "evidence.bParty": "no-evidence" },
     },
     {
       id: "b-party-hit",
       label: "B-Party: vulnerability hit",
-      set: { "app.section": "explore", "explore.bParty": "full" },
+      set: { "app.section": "evidence", "evidence.bParty": "full" },
     },
     {
       id: "cta-empty",

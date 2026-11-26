@@ -8,24 +8,16 @@ import {
 } from "../exploreData";
 import { BPartyExposureSummary } from "./BPartyExposureSummary";
 import { ExploreZeroState } from "./ExploreZeroState";
-import type { PartyMode } from "./PartyModeToggle";
 import { ResultPartyHeader } from "./ResultPartyHeader";
 
 type BPartyProfileResultProps = {
   query: string;
   onBack: () => void;
-  partyMode: PartyMode;
-  onPartyModeChange: (mode: PartyMode) => void;
 };
 
-export function BPartyProfileResult({
-  query,
-  onBack,
-  partyMode,
-  onPartyModeChange,
-}: BPartyProfileResultProps) {
+export function BPartyProfileResult({ query, onBack }: BPartyProfileResultProps) {
   const masked = maskIdentifier(query);
-  const state = useDevOverride("explore.bParty", resolveBPartyResultState(query));
+  const state = useDevOverride("evidence.bParty", resolveBPartyResultState(query));
 
   if (state === "zero") {
     return (
@@ -33,8 +25,6 @@ export function BPartyProfileResult({
         <ResultPartyHeader
           title={masked}
           onBack={onBack}
-          partyMode={partyMode}
-          onPartyModeChange={onPartyModeChange}
           meta={
             <>
               <span className="result-meta-icon">
@@ -60,8 +50,6 @@ export function BPartyProfileResult({
       <ResultPartyHeader
         title={masked}
         onBack={onBack}
-        partyMode={partyMode}
-        onPartyModeChange={onPartyModeChange}
         meta={
           <>
             <span className="result-meta-icon">

@@ -9,7 +9,6 @@ import {
   resolvePhoneResultState,
 } from "../exploreData";
 import { ExploreZeroState } from "./ExploreZeroState";
-import type { PartyMode } from "./PartyModeToggle";
 import { ResultEmptyPanel } from "./ResultEmptyPanel";
 import { ResultPartyHeader } from "./ResultPartyHeader";
 import { ThreatScoreCard } from "./ThreatScoreCard";
@@ -17,11 +16,9 @@ import { ThreatScoreCard } from "./ThreatScoreCard";
 type APartyResultProps = {
   query: string;
   onBack: () => void;
-  partyMode: PartyMode;
-  onPartyModeChange: (mode: PartyMode) => void;
 };
 
-export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: APartyResultProps) {
+export function APartyResult({ query, onBack }: APartyResultProps) {
   const masked = maskIdentifier(query);
   const state = useDevOverride("explore.aParty", resolvePhoneResultState(query));
 
@@ -31,8 +28,6 @@ export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: AP
         <ResultPartyHeader
           title={masked}
           onBack={onBack}
-          partyMode={partyMode}
-          onPartyModeChange={onPartyModeChange}
           meta={
             <>
               <span className="result-meta-icon">
@@ -61,8 +56,6 @@ export function APartyResult({ query, onBack, partyMode, onPartyModeChange }: AP
       <ResultPartyHeader
         title={masked}
         onBack={onBack}
-        partyMode={partyMode}
-        onPartyModeChange={onPartyModeChange}
         meta={
           <>
             <span className="result-meta-icon">

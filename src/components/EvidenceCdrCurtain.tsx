@@ -4,7 +4,7 @@ import {
   resolveEvidencePatternDetail,
   type EvidenceCdrRow,
 } from "../evidenceData";
-import type { EvidenceConfidence, RelatedAsset } from "../exploreData";
+import type { RelatedAsset } from "../exploreData";
 
 export type EvidenceCdrReviewDecision = "approved" | "rejected";
 
@@ -16,12 +16,6 @@ type EvidenceCdrCurtainProps = {
   reviewDecision?: EvidenceCdrReviewDecision | null;
   onReview?: (decision: EvidenceCdrReviewDecision) => void;
 };
-
-function confidenceClass(level: EvidenceConfidence) {
-  if (level === "HIGH") return "is-conf-high";
-  if (level === "LOW") return "is-conf-low";
-  return "is-conf-medium";
-}
 
 function relatedIcon(kind: RelatedAsset["kind"]) {
   return kind === "URL" ? assets.iconLink : assets.iconMessage;
@@ -110,10 +104,6 @@ export function EvidenceCdrCurtain({
               <p className="evidence-cdr-pattern">{pattern.excerpt}</p>
               <dl className="evidence-cdr-curtain-grid">
                 <div>
-                  <dt>Pattern families</dt>
-                  <dd>{pattern.families}</dd>
-                </div>
-                <div>
                   <dt>Use case</dt>
                   <dd>{pattern.useCase}</dd>
                 </div>
@@ -126,10 +116,6 @@ export function EvidenceCdrCurtain({
                   <dd>{pattern.identifiedOn}</dd>
                 </div>
                 <div>
-                  <dt>Related senders</dt>
-                  <dd>{pattern.relatedSenders}</dd>
-                </div>
-                <div>
                   <dt>Total attack counts</dt>
                   <dd>{pattern.totalAttackCounts}</dd>
                 </div>
@@ -138,40 +124,11 @@ export function EvidenceCdrCurtain({
                   <dd>{pattern.usersAffected}</dd>
                 </div>
                 <div>
-                  <dt>First observed</dt>
-                  <dd>{pattern.firstObserved}</dd>
-                </div>
-                <div>
                   <dt>Last observed</dt>
                   <dd>{pattern.lastObserved}</dd>
                 </div>
               </dl>
             </section>
-
-            {detail && detail.senders.length > 0 ? (
-              <section className="evidence-cdr-curtain-card">
-                <h3>Related senders</h3>
-                <ul className="evidence-cdr-curtain-list">
-                  {detail.senders.map((sender) => (
-                    <li key={sender.id}>
-                      <div className="evidence-cdr-curtain-list-main">
-                        <strong title={sender.sender}>{sender.sender}</strong>
-                        <span className={`badge ${confidenceClass(sender.confidence)}`}>
-                          {sender.confidence}
-                        </span>
-                      </div>
-                      <p>
-                        {sender.telecom} · {sender.channel} · {sender.useCase}
-                      </p>
-                      <p>
-                        {sender.attackCounts} attacks · {sender.usersAffected} users ·{" "}
-                        {sender.firstObserved} → {sender.lastObserved}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            ) : null}
 
             {detail && detail.related.length > 0 ? (
               <section className="evidence-cdr-curtain-card">
